@@ -22,7 +22,7 @@
             box-shadow: 0px 0px 10px black;
         }
 
-        .sidenav1 a {
+        .sidenav1 .a {
             padding: 4px 8px 8px 16px;
             margin-bottom: 9px;
             text-decoration: none;
@@ -34,7 +34,7 @@
 
         }
 
-        .sidenav1 a:hover {
+        .sidenav1 .a:hover {
             font-size: 19px;
             cursor: pointer;
             text-decoration: none;
@@ -52,7 +52,7 @@
                 padding-top: 15px;
             }
 
-            .sidenav1 a {
+            .sidenav1 .a {
                 font-size: 18px;
             }
         }
@@ -78,13 +78,13 @@
             color: red;
             margin-bottom: 20px;
         }
-        
-        .card-text{
+
+        .card-text {
             font-size: 18px;
             color: #fff;
         }
 
-        input{
+        input {
             border: 1px solid black;
             color: black;
             background-color: white;
@@ -108,15 +108,22 @@
 
 <div class="sidenav1">
     <center><span>Convergence 2k19</span></center>
-    <center><hr class="uk-divider-icon"></center>
-    <a href="/dashboard">Dashboard</a>
-    <a href="/campaigner/home">Campaigners</a>
-    <a href="/events">Events</a>
+    <center>
+        <hr class="uk-divider-icon">
+    </center>
+    <a class="a" href="/dashboard">Dashboard</a>
+    <a class="a" href="/campaigner/home">Campaigners</a>
+    <a class="a" href="/events">Events</a>
+
+
 </div>
 <div class="main" id="main-content">
+
     <div class="row">
         <div class="col m12 right-align">
-            <a class="uk-button uk-button-secondary" href="/admin_logout"><span uk-icon="icon:  sign-out" style="margin-right: 10px"></span><span style="">Logout</span></a></a>
+            <a class="uk-button uk-button-secondary" href="/admin_logout"><span uk-icon="icon:  sign-out"
+                                                                                style="margin-right: 10px"></span><span
+                    style="">Logout</span></a>
         </div>
     </div>
     {% block content %}
@@ -132,9 +139,9 @@
 <!-- AJAX -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function(){
-    $('.modal').modal();
-  });
+    $(document).ready(function () {
+        $('.modal').modal();
+    });
 </script>
 {% block script %}
 {% endblock %}

@@ -1,7 +1,6 @@
 import smtplib
 from flask import Flask, request, render_template, jsonify, redirect, session, url_for
 import random
-import pymysql
 import string
 from functools import wraps
 from flask_sqlalchemy import SQLAlchemy
@@ -12,7 +11,7 @@ import xml.etree.ElementTree as et
 
 app = Flask(__name__)
 app.secret_key = "jhsldfsakdfh23kjnk23h1j23g12kj3b12"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:''@localhost/mod2'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/convergence2k19-mitul'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
@@ -210,7 +209,7 @@ def process():
     mobile = request.form['mobile']
     key = request.form['key']
     camp_id = session['camp_id']
-    query = Campaigner.query.filter_by(CAMP_ID=camp_id,STATUS="active").first()
+    query = Campaigner.query.filter_by(CAMP_ID=camp_id, STATUS="active").first()
     if query is None:
         return jsonify({"result": "You Are on Frezze mode ! contact Admin"})
     if fname == "":
@@ -286,12 +285,12 @@ def camp_change_password(camp_id):
 
 # campaigner password forgot
 
-def send_data(reciver,message):
-	s = smtplib.SMTP('smtp.gmail.com', 587) 
-	s.starttls() 
-	s.login("testuvpce@gmail.com", "4591814515")
-	s.sendmail("testuvpce@gmail.com",reciver, message)
-	s.quit()
+def send_data(reciver, message):
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    s.login("testuvpce@gmail.com", "4591814515")
+    s.sendmail("testuvpce@gmail.com", reciver, message)
+    s.quit()
 
 
 @app.route('/camp_forgot_password', methods=['POST', 'GET'])
@@ -312,7 +311,7 @@ def camp_forgot_password():
         try:
             reciver = query.EMAIL
             message = "Hello Campaginer : your Password is :  {} ".format(query.PASSWORD)
-            send_data(reciver,message)
+            send_data(reciver, message)
             message = "Password is sent on your Registed Email !  "
             danzer = "false"
             return render_template("backend/camp_forgot_password.html", message=message, danzer=danzer)
@@ -336,7 +335,7 @@ def dash():
     return render_template('admin/dashboard.html', myUsers=myUsers, myCampaigner=myCampaigner)
 
 
-@app.route('/campaigner', defaults={'data':home})
+@app.route('/campaigner', defaults={'data': home})
 @app.route('/campaigner/<data>')
 def camp1(data, message='none'):
     if 'admin_temp_var' not in session:
@@ -408,12 +407,49 @@ def change_camp_status():
         update_camp.STATUS = 'active'
     db.session.commit();
 
-    return jsonify({'msg':'success'})
+    return jsonify({'msg': 'success'})
 
-#events
-@app.route('/events')
-def events():
-    return render_template('admin/events.html')
+
+# events
+@app.route('/events', defaults={'action': None, 'id': None,'msg': None})
+@app.route('/events/<msg>', defaults={'action': None, 'id': None})
+@app.route('/events/<action>/<id>', defaults={'msg': None})
+def events(msg,action, id):
+    base_path = os.path.dirname(os.path.realpath(__file__))
+    xml_file = os.path.join(base_path, "data\\events.xml")
+    tree = et.parse(xml_file)
+    if action != None:
+        root = tree.getroot()
+        for r in root:
+            for event in r:
+                if (event.attrib["id"] == id):
+                    for sub_tag in event:
+                        if sub_tag.tag == "name":
+                            event_name = sub_tag.text
+                        if sub_tag.tag == "description":
+                            desc = sub_tag.text
+        return render_template('admin/events.html', xml=tree, action=action, id=id,event_name=event_name,desc=desc)
+    elif msg == 'success':
+        return render_template('admin/events.html', xml=tree,msg='success')
+    else:
+        return render_template('admin/events.html', xml=tree)
+
+
+@app.route('/edit_desc/<id>',methods=['POST'])
+def edit_desc(id):
+    updated_desc = request.form['description']
+    base_path = os.path.dirname(os.path.realpath(__file__))
+    xml_file = os.path.join(base_path, "data\\events.xml")
+    tree = et.parse(xml_file)
+    root = tree.getroot()
+    for r in root:
+        for event in r:
+            if (event.attrib["id"] == id):
+                for sub_tag in event:
+                    if sub_tag.tag == "description":
+                        sub_tag.text = updated_desc
+                        tree.write(xml_file)
+    return redirect(url_for('events',msg='success'))
 
 
 if __name__ == '__main__':

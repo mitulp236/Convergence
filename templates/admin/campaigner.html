@@ -31,24 +31,23 @@
                     <p>Campaigner added successfully.</p>
                 </div>
             {% endif %}
-
             <div class="row card" style="overflow: auto">
                 <table class="highlight">
-                    <thead>
-                    <tr>
-                        <th>En_no</th>
-                        <th>Email</th>
-                        <th>Password</th>
-                        <th></th>
-                        <th>FirstName</th>
-                        <th>LastName</th>
-                        <th>Sem</th>
-                        <th>Branch</th>
-                        <th>Mobile</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                    </thead>
+                    <div>
+                        <tr>
+                            <th>En_no</th>
+                            <th>Email</th>
+                            <th>Password</th>
+                            <th></th>
+                            <th>FirstName</th>
+                            <th>LastName</th>
+                            <th>Sem</th>
+                            <th>Branch</th>
+                            <th>Mobile</th>
+                            <th>Status</th>
+                            <th></th>
+                        </tr>
+                    </div>
 
                     {% for camp_user in myCampaigner %}
                         <tr>
@@ -201,13 +200,13 @@
     <script>
         function manage_camp(id) {
             var camp_stat = document.getElementById('camp_status' + id);
-                $.ajax({
-                data: {camp_id: id,status: camp_stat.textContent},
+            $.ajax({
+                data: {camp_id: id, status: camp_stat.textContent},
                 type: 'POST',
                 url: '/change_camp_status'
             })
                 .done(function (data) {
-                    if (data.msg == 'success'){
+                    if (data.msg == 'success') {
                         window.location.href = "/campaigner/home"
                     }
                 })

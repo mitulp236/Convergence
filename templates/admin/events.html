@@ -2,15 +2,80 @@
 
 {% block style %}
     <style>
-        .inp {
-            border: 1px solid black;
-            color: black;
-            background-color: white;
-        }
+
     </style>
 {% endblock %}
 
 {% block content %}
-    <h1>Hello World...</h1>
-    this is events page...
+    {% if msg == 'success' %}
+        <div class="uk-alert-success" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p>Description updated successfully.</p>
+        </div>
+    {% endif %}
+    {% if action == "description" %}
+        <!-- This is an anchor toggling the modal -->
+        <a href="#modal-example" uk-toggle style="display: none" id="desc">Open</a>
+
+        <!-- This is the modal -->
+        <div id="modal-example" uk-modal bg-close="false">
+            <div class="uk-modal-dialog uk-modal-body">
+
+                <form method="post" action="/edit_desc/{{ id }}">
+
+                    <h2 class="uk-modal-title">Description - {{ event_name }}</h2>
+                    <textarea name="description" style="height: 270px">{{ desc }}</textarea>
+                    <p class="uk-text-right">
+                        <a class="uk-button uk-button-default" href="/events"> Close</a>
+                        <button class="uk-button uk-button-primary" type="submit">Save</button>
+                    </p>
+
+                </form>
+
+            </div>
+        </div>
+    {% endif %}
+    {% if action == "rules" %}
+        {{ id }}
+    {% endif %}
+    <table class="responsive-table highlight">
+        <tr>
+            <th>Department</th>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Venue</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% set root = xml.getroot() %}
+        {% for r in root %}
+            <tr>
+                <td>{{ r.attrib['name'] }}</td>
+                {% for event in r %}
+                    {% set event_id = event.attrib["id"] %}
+                    {% for sub_tag in event %}
+                        {% if sub_tag.tag != "description" %}
+                            <td>{{ sub_tag.text }}</td>
+                        {% endif %}
+
+                    {% endfor %}
+                    <td>
+                        <div class="uk-button-group">
+                            <a class="uk-button uk-button-primary"
+                               href="/events/description/{{ event_id }}">Desctiption</a>
+                            <a class="uk-button uk-button-danger" href="/events/rules/{{ event_id }}">Rules</a>
+                        </div>
+                    </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
+{% block script %}
+    <script>
+        {% if action == "description" %}
+            document.getElementById('desc').click();
+        {% endif %}
+    </script>
 {% endblock %}

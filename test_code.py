@@ -41,3 +41,13 @@ root = tree.getroot()
 #                     event.text = 'Hunter League'
 #                     tree.write(xml_file )
 #                     print(event.text)
+
+for r in root:
+    print("department : "+r.attrib['name'])
+    for event in r:
+
+        if(event.attrib["id"] == '2'):
+            print("event id : "+event.attrib["id"])
+            for sub_tag in event:
+                if sub_tag.tag == "description":
+                    print(sub_tag.text)
