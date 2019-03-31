@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    {% block style %}
+    {% endblock %}
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .sidenav1 {
+            height: 100%;
+            width: 35vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: #ffffff;
+            overflow-x: hidden;
+            padding-top: 20px;
+            box-shadow: 0px 0px 10px black;
+        }
+
+        .sidenav1 a {
+            padding: 4px 8px 8px 16px;
+            margin-bottom: 9px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #000;
+            display: block;
+            text-align: center;
+            height: 4vh;
+
+        }
+
+        .sidenav1 a:hover {
+            font-size: 19px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .main {
+            margin-left: 35vh; /* Same as the width of the sidenav1 */
+            padding: 10px 10px;
+            height: 100vh;
+            background-color: #D3D3C3;
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav1 {
+                padding-top: 15px;
+            }
+
+            .sidenav1 a {
+                font-size: 18px;
+            }
+        }
+
+        .sidenav1 .active {
+            background-color: #0791e6;
+            color: #fff;
+            padding-top: 8px;
+            margin: 9px 5px;
+            border: 0px solid;
+            border-radius: 7px;
+            font-weight: bold;
+            height: 6vh;
+        }
+
+        .sidenav1 span, center {
+            font-size: x-large;
+            margin-bottom: 20px;
+        }
+
+        .sidenav1 hr {
+            width: 86%;
+            color: red;
+            margin-bottom: 20px;
+        }
+        
+        .card-text{
+            font-size: 18px;
+            color: #fff;
+        }
+
+        input{
+            border: 1px solid black;
+            color: black;
+            background-color: white;
+        }
+
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Convergence 2k19</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/css/uikit.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+
+
+<div class="sidenav1">
+    <center><span>Convergence 2k19</span></center>
+    <center><hr class="uk-divider-icon"></center>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/campaigner/home">Campaigners</a>
+    <a href="/events">Events</a>
+</div>
+<div class="main" id="main-content">
+    <div class="row">
+        <div class="col m12 right-align">
+            <a class="uk-button uk-button-secondary" href="/admin_logout"><span uk-icon="icon:  sign-out" style="margin-right: 10px"></span><span style="">Logout</span></a></a>
+        </div>
+    </div>
+    {% block content %}
+        {% include 'admin/dashboard.html' %}
+    {% endblock %}
+</div>
+
+<!-- UIkit JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<!-- AJAX -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function(){
+    $('.modal').modal();
+  });
+</script>
+{% block script %}
+{% endblock %}
+</body>
+</html>

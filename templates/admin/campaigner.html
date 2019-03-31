@@ -1,0 +1,216 @@
+{% extends 'admin/index.html' %}
+
+{% block style %}
+    <style>
+        .inp {
+            border: 1px solid black;
+            color: black;
+            background-color: white;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    {% if data == 'home' %}
+
+
+        <div style="margin: 15px">
+
+            <div class="row">
+                <div class="col m4">
+                    <blockquote><span class="flow-text">Campaigners</span></blockquote>
+                </div>
+                <div class="col m8 center" style="padding-top: 10px">
+                    <a class="uk-button uk-button-danger" href="/campaigner/add">Add Campaigner</a>
+                </div>
+            </div>
+
+            {% if message == 'success' %}
+                <div class="uk-alert-success" uk-alert>
+                    <a class="uk-alert-close" uk-close></a>
+                    <p>Campaigner added successfully.</p>
+                </div>
+            {% endif %}
+
+            <div class="row card" style="overflow: auto">
+                <table class="highlight">
+                    <thead>
+                    <tr>
+                        <th>En_no</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                        <th></th>
+                        <th>FirstName</th>
+                        <th>LastName</th>
+                        <th>Sem</th>
+                        <th>Branch</th>
+                        <th>Mobile</th>
+                        <th>Status</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+
+                    {% for camp_user in myCampaigner %}
+                        <tr>
+                            <td>{{ camp_user.ENROLLMENT_NO }}</td>
+                            <td>{{ camp_user.EMAIL }}</td>
+                            <td>
+                                <div id="camp_password{{ camp_user.CAMP_ID }}">********</div>
+                            </td>
+                            <td>
+                                <a onclick="show_password({{ camp_user.CAMP_ID }})"><i class="material-icons prefix"
+                                                                                       style="padding-top: 5px">remove_red_eye</i></a>
+                            </td>
+                            <td>{{ camp_user.FIRSTNAME }}</td>
+                            <td>{{ camp_user.LASTNAME }}</td>
+                            <td>{{ camp_user.SEM }}</td>
+                            <td>{{ camp_user.BRANCH }}</td>
+                            <td>{{ camp_user.MOBILE }}</td>
+                            <td id="camp_status{{ camp_user.CAMP_ID }}">{{ camp_user.STATUS }}</td>
+                            <td>
+                                {% if camp_user.STATUS == "active" %}
+                                    <a onclick="manage_camp({{ camp_user.CAMP_ID }})"><i class="material-icons prefix"
+                                                                                         style="padding-top: 5px">close</i></a>
+                                {% else %}
+                                    <a onclick="manage_camp({{ camp_user.CAMP_ID }})"><i class="material-icons prefix"
+                                                                                         style="padding-top: 5px">check</i></a>
+                                {% endif %}
+
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                </table>
+            </div>
+        </div>
+    {% endif %}
+    {% if data == 'add' %}
+        <div class="row">
+            <form class="col m12 card" method="post" action="/form-register-campaigner">
+
+                <div class="row" style="margin-top: 20px">
+                    <div class="col m10 center">
+                        <span class="flow-text" style="font-size: 30px;">Register Campaigner</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col m2 center"></div>
+                    <div class="col m6">
+                        <div class="input-field">
+                            <i class="material-icons prefix">mail_outline</i>
+                            <input id="email" type="email" name="email">
+                            <label for="email">Email</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: -20px">
+                    <div class="col m2 center"></div>
+                    <div class="col m3">
+                        <div class="input-field">
+                            <i class="material-icons prefix">person_outline</i>
+                            <input name="firstname" type="text" id="fname">
+                            <label for="fname">Firstname</label>
+                        </div>
+                    </div>
+                    <div class="col m3">
+                        <div class="input-field">
+                            <input name="lastname" type="text" id="lname">
+                            <label for="lname">Lastname</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: -20px">
+                    <div class="col m2 center"></div>
+                    <div class="col m3">
+                        <div class="input-field">
+                            <i class="material-icons prefix">assignment_ind</i>
+                            <input name="er_no" type="text" id="er_no">
+                            <label for="er_no">Enrollment No.</label>
+                        </div>
+                    </div>
+                    <div class="col m3">
+                        <label>Branch</label>
+                        <select class="browser-default" name="branch">
+                            <option value="" disabled selected>Choose your option</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Computer Engineering">Computer Engineering</option>
+                            <option value="Electronics & Comm. Engg.">Electronics & Comm. Engg.</option>
+                            <option value="Bio-Medical Engineering">Bio-Medical Engineering</option>
+                            <option value="Mechanical Engineering">Mechanical Engineering</option>
+                            <option value="Mechatronics Engineering">Mechatronics Engineering</option>
+                            <option value="Civil Engineering">Civil Engineering</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                            <option value="Marine Engineering">Marine Engineering</option>
+                            <option value="Automobile Engineering">Automobile Engineering</option>
+                            <option value="Humanity & Science Department">Humanity & Science Department</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: -20px">
+                    <div class="col m2 center"></div>
+                    <div class="col m3">
+                        <label>Semester</label>
+                        <div class="input-field">
+                            <select class="browser-default" name="sem">
+                                <option value="" disabled selected>Choose your option</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                            </select>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row" style="margin-top: -20px">
+                    <div class="col m2 center"></div>
+                    <div class="col m3">
+                        <div class="input-field">
+                            <i class="material-icons prefix">phone_iphone</i>
+                            <input name="mobile_number" type="tel" id="mobile_number">
+                            <label for="mobile_number">Mobile Number</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col m10 center">
+                        <button class="uk-button uk-button-default" style="border-color: lawngreen;margin-right: 50px"
+                                type="submit">Submit
+                        </button>
+                        <button class="uk-button uk-button-default" style="border-color: red;" type="reset">Clear
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="col m2"></div>
+        </div>
+
+
+
+    {% endif %}
+{% endblock %}
+{% block  script %}
+    <script src="{{ url_for('static', filename = 'admin.js') }}">
+    </script>
+    <script>
+        function manage_camp(id) {
+            var camp_stat = document.getElementById('camp_status' + id);
+                $.ajax({
+                data: {camp_id: id,status: camp_stat.textContent},
+                type: 'POST',
+                url: '/change_camp_status'
+            })
+                .done(function (data) {
+                    if (data.msg == 'success'){
+                        window.location.href = "/campaigner/home"
+                    }
+                })
+        }
+    </script>
+{% endblock %}

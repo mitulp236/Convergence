@@ -1,0 +1,41 @@
+{% extends 'admin/index.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col m4">
+            <div class="uk-card uk-card-primary uk-card-body">
+                <div class="col m6">
+                    <div class="card-text">Total Student Enrolled</div>
+                </div>
+                <div class="col m6 flow-text "><span
+                        style="font-size: x-large;font-weight: bold;color: black">: {{ myUsers|length }}</span></div>
+            </div>
+        </div>
+        <div class="col m4">
+            <a href="/campaigner/home">
+                <div class="uk-card uk-card-primary uk-card-body">
+                    <div class="col m6">
+                        <div class="card-text">Total Campaigner</div>
+                    </div>
+                    <div class="col m6 flow-text "><span
+                            style="font-size: x-large;font-weight: bold;color: black">: {{ myCampaigner|length }}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col m4">
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col m3">
+            <div class="card">
+                <div class="card-action">
+                    <span style="font-weight: bold;margin-right: 8px">Add Campaigner</span>
+                    <a class="btn-floating btn-large waves-effect waves-light red" href="/campaigner/add"><i
+                            class="material-icons">add</i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

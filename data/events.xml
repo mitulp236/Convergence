@@ -1,0 +1,39 @@
+<root>
+    <department name="CE IT">
+        <event id="1">
+            <name>Poster Presentation</name>
+            <date>14 Sept,2019</date>
+            <time>12:45 pm to 4:30 pm</time>
+            <venue>New Building LAB 105</venue>
+            <discription>
+                The project work constitutes a major component in most of the professional programmers. In this
+                event project should be related to the field of Computer science / Information Technology.
+                Participants of this event are expected to demonstrate some real life project. These projects can be
+                carried out in some industry, research and development laboratories, educational institutions or
+                software companies by the participant.
+                It is suggested that the project is to be chosen which should have some direct relevance in day-to-day
+                activities.
+                Participants have to show the actual working of their project. Judging will be done on the basis of
+                clarity of demonstration, effectiveness of the project and uniqueness of your idea.
+            </discription>
+            <rules>
+                <rule id="1"></rule>
+            </rules>
+        </event>
+    </department>
+    <department name="CIVIL">
+        <event id="2">
+            <name>Hunter League</name>
+            <date>15 Sept,2019</date>
+            <time>10:30am to 11:15am and 1:00pm to 4:30pm</time>
+            <venue>New Building PG Section</venue>
+            <discription>It is a treasure hunt type of competition, but the twist lies in the clues. The clues will be
+                given in the form of code. Each team will have to crack the code leading them to another clue. Here the
+                basic knowledge of C programming languages will be put to test.
+            </discription>
+            <rules>
+                <rule id="1"></rule>
+            </rules>
+        </event>
+    </department>
+</root>
