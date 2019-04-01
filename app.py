@@ -435,21 +435,29 @@ def events(msg,action, id):
         return render_template('admin/events.html', xml=tree)
 
 
-@app.route('/edit_desc/<id>',methods=['POST'])
-def edit_desc(id):
-    updated_desc = request.form['description']
+# @app.route('/edit_desc/<id>',methods=['POST'])
+# def edit_desc(id):
+#     updated_desc = request.form['description']
+#     base_path = os.path.dirname(os.path.realpath(__file__))
+#     xml_file = os.path.join(base_path, "data\\events.xml")
+#     tree = et.parse(xml_file)
+#     root = tree.getroot()
+#     for r in root:
+#         for event in r:
+#             if (event.attrib["id"] == id):
+#                 for sub_tag in event:
+#                     if sub_tag.tag == "description":
+#                         sub_tag.text = updated_desc
+#                         tree.write(xml_file)
+#     return redirect(url_for('events',msg='success'))
+
+
+@app.route('/add_event')
+def add_event():
     base_path = os.path.dirname(os.path.realpath(__file__))
     xml_file = os.path.join(base_path, "data\\events.xml")
     tree = et.parse(xml_file)
-    root = tree.getroot()
-    for r in root:
-        for event in r:
-            if (event.attrib["id"] == id):
-                for sub_tag in event:
-                    if sub_tag.tag == "description":
-                        sub_tag.text = updated_desc
-                        tree.write(xml_file)
-    return redirect(url_for('events',msg='success'))
+    return render_template('admin/events.html',xml=tree, msg='add_event')
 
 
 if __name__ == '__main__':

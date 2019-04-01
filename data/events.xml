@@ -1,6 +1,6 @@
 <root>
     <department name="CE IT">
-        <event id="1">
+        <event id="CE_IT_1">
             <name>Poster Presentation</name>
             <date>14 Sept,2019</date>
             <time>12:45 pm to 4:30 pm</time>
@@ -12,7 +12,7 @@
         </event>
     </department>
     <department name="CIVIL">
-        <event id="2">
+        <event id="CIVIL_2">
             <name>Hunter League</name>
             <date>15 Sept,2019</date>
             <time>10:30am to 11:15am and 1:00pm to 4:30pm</time>
