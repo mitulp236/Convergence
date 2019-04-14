@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Convergence 2k19</title>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/css/uikit.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+<body>
+<a class="uk-button uk-button-default" href="#event" id="add_event_modal" style="display: none;" uk-toggle>Open</a>
+
+<div id="event" class="uk-modal-full" uk-modal esc-close="false">
+    <div class="uk-modal-dialog">
+        <button class="uk-modal-close-full uk-close-large" type="button" uk-close onclick="closeModal()"></button>
+        <div class="uk-grid-collapse uk-child-width-1-1@s uk-flex-middle" uk-grid>
+            <div uk-height-viewport>
+                <form>
+                    <div class="row">
+                        <div class="col m4" style="margin-left: 50px">
+                            <div class="row">
+                                <div class="col m10 input-field">
+                                    <input type="text" id="name" name="name"/>
+                                    <label for="name">Event Name</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col m10">
+                                    Event Date : <input type="date" class="datepicker">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col m10 input-field">
+                                    <input type="text" id="time" name="time"/>
+                                    <label for="time">Event Time</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col m10 input-field">
+                                    <input type="text" id="venue" name="venue"/>
+                                    <label for="venue">Venue</label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col m6">
+                            <fieldset>
+                                <legend>Description & Rules</legend>
+                                <div class="row">
+                                    <div class="col m1"></div>
+                                    <div class="col m10 input-field">
+                                        <textarea id="textbox" class="materialize-textarea"
+                                                  name="description"></textarea>
+                                        <label for="textbox">Description</label>
+                                    </div>
+                                    <div class="col m1"></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col m1"></div>
+                                    <div class="col m10 input-field">
+                                        <div class="row">
+                                            <div class="col m4"> Number of Rules :</div>
+                                            <div class="col m8"><input type="number" id="rules"/></div>
+                                        </div>
+                                    </div>
+                                    <div class="col m1"></div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- UIkit JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<!-- AJAX -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    document.getElementById('add_event_modal').click();
+
+    function closeModal() {
+        window.location.href = "/events";
+    }
+</script>
+</body>
+</html>

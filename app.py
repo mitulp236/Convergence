@@ -457,7 +457,7 @@ def add_event():
     base_path = os.path.dirname(os.path.realpath(__file__))
     xml_file = os.path.join(base_path, "data\\events.xml")
     tree = et.parse(xml_file)
-    return render_template('admin/events.html',xml=tree, msg='add_event')
+    return render_template('admin/add_event.html',xml=tree, msg='add_event')
 
 
 if __name__ == '__main__':

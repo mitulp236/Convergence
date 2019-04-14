@@ -14,41 +14,6 @@
     </div>
 
 
-    {% if msg == 'add_event' %}
-
-        <a class="uk-button uk-button-default" href="#modal-full" id="add_event_modal" style="display: none;" uk-toggle>Open</a>
-
-        <div id="modal-full" class="uk-modal-full" uk-modal esc-close="false">
-            <div class="uk-modal-dialog">
-                <button class="uk-modal-close-full uk-close-large" type="button" uk-close></button>
-                <div class="uk-grid-collapse uk-child-width-1-1@s uk-flex-middle" uk-grid>
-                    <div uk-height-viewport>
-                        <form>
-                            <div class="row">
-                                <div class="col m4 right-align" style="font-weight: bold;font-size: 20px">Name : </div>
-                                <div class="col m8"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col m4 right-align" style="font-weight: bold;font-size: 20px">Date : </div>
-                                <div class="col m8"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col m4 right-align" style="font-weight: bold;font-size: 20px">Time : </div>
-                                <div class="col m8"></div>
-                            </div>
-                            <div class="row">
-                                <div class="col m4 right-align" style="font-weight: bold;font-size: 20px">Description : </div>
-                                <div class="col m8"></div>
-                            </div>
-                        </form>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    {% endif %}
-
-
     {% if msg == 'success' %}
         <div class="uk-alert-success" uk-alert>
             <a class="uk-alert-close" uk-close></a>
@@ -113,9 +78,7 @@
 {% endblock %}
 {% block script %}
     <script>
-        {% if msg == "add_event" %}
-            document.getElementById('add_event_modal').click();
-        {% endif %}
+
         {% if action == "description" %}
             document.getElementById('desc').click();
         {% endif %}
@@ -137,5 +100,10 @@
                     this.selectionEnd = start + 1;
             }
         });
+
+
+    </script>
+    <script>
+
     </script>
 {% endblock %}
