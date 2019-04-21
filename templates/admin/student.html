@@ -1,20 +1,54 @@
 {% extends 'admin/index.html' %}
 
+{% block style %}
+    <style>
+        .custom-search-input {
+
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
+
     <div class="row">
         <div class="col m1"></div>
         <div class="col m6">
             <div class="row">
-                <form action="/search_student" method="post">
-                    <div class="col m9 white">
-                        <input type="text" name="search" placeholder="Search"/>
+                <nav style="background-color: white">
+                    <div class="nav-wrapper">
+                        <form action="/search_student" method="post">
+                            <div class="input-field">
+                                <input id="search" type="search" name="search">
+                                <label class="label-icon" for="search"><i class="material-icons" style="color: black">search</i></label>
+                                <i class="material-icons">close</i>
+                            </div>
+                        </form>
                     </div>
-                    <div class="col m3"><button type="submit" class="btn">Search</button></div>
-                </form>
+                </nav>
+                {#                <form action="/search_student" method="post">#}
+                {#                    <div class="col m9 white">#}
+                {##}
+                {#                        <input type="text"#}
+                {#                               style="border: 0.5px black solid; padding-left: 10px"#}
+                {#                               name="search" placeholder="Search"/>#}
+                {#                    </div>#}
+                {#                    <div class="col m3">#}
+                {#                        <button type="submit" class="uk-button uk-button-default"#}
+                {#                                onMouseOver="this.style.background='lawngreen'"#}
+                {#                                onMouseOut="this.style.background='white'" style="border-color: lawngreen"><b><span#}
+                {#                                uk-icon="icon: search"></span></b></button>#}
+                {#                    </div>#}
+                {#                </form>#}
             </div>
         </div>
         <div class="col m5"></div>
     </div>
+    {% if message == "no result" %}
+        <div class="uk-alert-danger" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p><b>No record found !</b></p>
+        </div>
+    {% endif %}
     <div class="row">
         <table>
             <tr>
@@ -27,19 +61,21 @@
                 <th>Email</th>
                 <th>Mobile</th>
             </tr>
-            {% for i in range(student|length) %}
-                <tr>
-                    <td>{{ student[i]['STUDENT_KEY'] }}</td>
-                    <td>{{ student[i]['LASTNAME'] }}, {{ student[i]['FIRSTNAME'] }}</td>
-                    <td>{{ student[i]['ENROLLMENT_NO'] }}</td>
-                    <td>{{ student[i]['BRANCH'] }}</td>
-                    <td>{{ student[i]['SEM'] }}</td>
-                    <td>{{ student[i]['COLLEGE'] }}</td>
-                    <td>{{ student[i]['EMAIL'] }}</td>
-                    <td>{{ student[i]['MOBILE'] }}</td>
-                </tr>
-            {% endfor %}
-
+            {% if message != "no result" %}
+                {% for i in range(student|length) %}
+                    <tr>
+                        <td>{{ student[i]['STUDENT_KEY'] }}</td>
+                        <td>{{ student[i]['LASTNAME'] }}, {{ student[i]['FIRSTNAME'] }}</td>
+                        <td>{{ student[i]['ENROLLMENT_NO'] }}</td>
+                        <td>{{ student[i]['BRANCH'] }}</td>
+                        <td>{{ student[i]['SEM'] }}</td>
+                        <td>{{ student[i]['COLLEGE'] }}</td>
+                        <td>{{ student[i]['EMAIL'] }}</td>
+                        <td>{{ student[i]['MOBILE'] }}</td>
+                    </tr>
+                {% endfor %}
+            {% endif %}
         </table>
+
     </div>
 {% endblock %}

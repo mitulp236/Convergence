@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/css/uikit.min.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <style>
+        .btnsubmit:hover{
+            background-color: lawngreen;
+            color: white;
+        }
+    </style>
+
 </head>
 <body>
 <a class="uk-button uk-button-default" href="#event" id="add_event_modal" style="display: none;" uk-toggle>Open</a>
@@ -19,7 +27,7 @@
 
                 {% if msg == 'empty field' %}
                     <div class="row">
-                    <div class="col m3"></div>
+                        <div class="col m3"></div>
                         <div class="col m6">
                             <div class="uk-alert-danger" uk-alert>
                                 <a class="uk-alert-close" uk-close></a>
@@ -30,84 +38,128 @@
                 {% endif %}
 
                 {% if status %}
-                    <form action="/add_rules" method="post">
-                        {% set number = status | int %}
-                        {% for i in range(number) %}
-                            {{ i + 1 }}.<input type="text" name="{{ i }}"/>
-                        {% endfor %}
-                        <input type="hidden" name="count" value="{{ status }}"/>
-                        <input type="submit" value="Submit"/>
-                    </form>
-                {% else %}
-                    <form action="add_event_next" method="post">
-                        <div class="row" style="margin-top: 20px">
-                            <div class="col m4" style="margin-left: 50px">
-                                <div class="row">
-                                    <div class="col m10">
-                                        Department:
-                                        <select class="uk-select" name="department">
-                                            <option>Computer Engineering</option>
-                                            <option>Information Technology</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col m10 input-field">
-                                        <input type="text" id="name" name="name"/>
-                                        <label for="name">Event Name</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col m10">
-                                        Event Date : <input type="date" name="date" class="datepicker">
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col m10 input-field">
-                                        <input type="text" id="time" name="time"/>
-                                        <label for="time">Event Time</label>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col m10 input-field">
-                                        <input type="text" id="venue" name="venue"/>
-                                        <label for="venue">Venue</label>
-                                    </div>
-                                </div>
-
-                            </div>
-                            <div class="col m6">
-                                <fieldset>
-                                    <legend>Description & Rules</legend>
+                    <div class="row center">
+                        <span style="font-size: x-large">Add Rules</span>
+                    </div>
+                    <div class="container">
+                        <div class="row">
+                            <form action="/add_rules" method="post">
+                                {% set number = status | int %}
+                                {% for i in range(number) %}
                                     <div class="row">
-                                        <div class="col m1"></div>
+                                        <div class="col m2 right-align" style="margin-top: 20px">{{ i + 1 }}.</div>
+                                        <div class="col m10"><input type="text" name="{{ i }}"
+                                                                    placeholder="Rule {{ i + 1 }}"/></div>
+                                    </div>
+                                {% endfor %}
+                                <div class="row center">
+                                    <input type="hidden" name="count" value="{{ status }}"/>
+                                    <input type="submit" class="btnsubmit uk-button uk-button-default"
+                                           style="border-color: lawngreen" value="Submit"/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                {% else %}
+                    <div class="row center">
+                        <span class="flow-text">Add Event</span>
+                    <hr class="uk-divider-icon">
+                    </div>
+                    <div class="row">
+                        <form action="add_event_next" method="post">
+                            <div class="row" style="margin-top: 20px">
+                                <div class="col m4" style="margin-left: 50px">
+                                    <div class="row">
+                                        <div class="col m10">
+                                            Department:
+                                            <select class="uk-select" name="department">
+                                                <option value="Information Technology">Information Technology
+                                                </option>
+                                                <option value="Computer Engineering">Computer Engineering</option>
+                                                <option value="Electronics & Comm. Engg.">Electronics & Comm.
+                                                    Engg.
+                                                </option>
+                                                <option value="Bio-Medical Engineering">Bio-Medical Engineering
+                                                </option>
+                                                <option value="Mechanical Engineering">Mechanical Engineering
+                                                </option>
+                                                <option value="Mechatronics Engineering">Mechatronics Engineering
+                                                </option>
+                                                <option value="Civil Engineering">Civil Engineering</option>
+                                                <option value="Electrical Engineering">Electrical Engineering
+                                                </option>
+                                                <option value="Marine Engineering">Marine Engineering</option>
+                                                <option value="Automobile Engineering">Automobile Engineering
+                                                </option>
+                                                <option value="Humanity & Science Department">Humanity & Science
+                                                    Department
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row">
                                         <div class="col m10 input-field">
+                                            <input type="text" id="name" name="name"/>
+                                            <label for="name">Event Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col m10">
+                                            Event Date : <input type="date" name="date" class="datepicker">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col m10 input-field">
+                                            <input type="text" id="time" name="time"/>
+                                            <label for="time">Event Time</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col m10 input-field">
+                                            <input type="text" id="venue" name="venue"/>
+                                            <label for="venue">Venue</label>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col m6">
+                                    <fieldset>
+                                        <legend>Description & Rules</legend>
+                                        <div class="row">
+                                            <div class="col m1"></div>
+                                            <div class="col m10 input-field">
                                         <textarea id="textbox" class="materialize-textarea"
                                                   name="description"></textarea>
-                                            <label for="textbox">Description</label>
-                                        </div>
-                                        <div class="col m1"></div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col m1"></div>
-                                        <div class="col m10 input-field">
-                                            <div class="row">
-                                                <div class="col m4"> Number of Rules :</div>
-                                                <div class="col m8"><input type="number" name="rules" min="1"
-                                                                           id="rules"/></div>
+                                                <label for="textbox">Description</label>
                                             </div>
+                                            <div class="col m1"></div>
                                         </div>
-                                        <div class="col m1"></div>
+                                        <div class="row">
+                                            <div class="col m1"></div>
+                                            <div class="col m10 input-field">
+                                                <div class="row">
+                                                    <div class="col m4"> Number of Rules :</div>
+                                                    <div class="col m8"><input type="number" name="rules" min="1"
+                                                                               id="rules"/></div>
+                                                </div>
+                                            </div>
+                                            <div class="col m1"></div>
+                                        </div>
+                                    </fieldset>
+                                    <div class="row"></div>
+                                    <div class="row center">
+                                        <button class="btnsubmit uk-button uk-button-default" style="border-color: lawngreen" type="submit">Next</button>
                                     </div>
-                                </fieldset>
+                                </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col m12 center">
-                                <button class="btn" type="submit">Next</button>
+                            <div class="row" style="margin-top: -20px">
+                                <div class="col m12 center">
+
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 {% endif %}
             </div>
 

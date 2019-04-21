@@ -128,10 +128,7 @@ class Events(db.Model):
 
 @app.route('/', methods=['POST', 'GET'])
 def home():
-    if request.method == "POST":
-        return "home"
-    else:
-        return "<h1>Home</h1>"
+    return render_template('main/index.html')
 
 
 @app.route('/admin', methods=['POST', 'GET'])
@@ -371,10 +368,24 @@ def dash():
     if 'admin_temp_var' not in session:
         return render_template('backend/admin_login.html')
 
-    myUsers = Student_data.query.all()
+    student = Student_data.query.all()
+    std = []
+    for i in range(len(student)):
+        std.append({})
+    temp_i = 0;
+    for s in student:
+        std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
+                            'NAME': s.LASTNAME + ',' + s.FIRSTNAME,
+                            'ENROLLMENT_NO': s.ENROLLMENT_NO,
+                            'BRANCH': s.BRANCH,
+                            'SEM': s.SEM,
+                            'COLLEGE': s.COLLEGE,
+                            'EMAIL': s.EMAIL,
+                            'MOBILE': s.MOBILE})
+        temp_i += 1
     myCampaigner = Campaigner.query.all()
     myEvents = Events.query.all()
-    return render_template('admin/dashboard.html', myUsers=myUsers, myCampaigner=myCampaigner, myEvents=myEvents)
+    return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner, myEvents=myEvents)
 
 
 @app.route('/campaigner', defaults={'data': home})
@@ -475,23 +486,6 @@ def events(msg, action, id):
     except:
         myevent = Events.query.all()
         return render_template('admin/events.html', myevent=myevent, message='home', msg="error")
-
-
-# @app.route('/edit_desc/<id>',methods=['POST'])
-# def edit_desc(id):
-#     updated_desc = request.form['description']
-#     base_path = os.path.dirname(os.path.realpath(__file__))
-#     xml_file = os.path.join(base_path, "data\\events.xml")
-#     tree = et.parse(xml_file)
-#     root = tree.getroot()
-#     for r in root:
-#         for event in r:
-#             if (event.attrib["id"] == id):
-#                 for sub_tag in event:
-#                     if sub_tag.tag == "description":
-#                         sub_tag.text = updated_desc
-#                         tree.write(xml_file)
-#     return redirect(url_for('events',msg='success'))
 
 
 @app.route('/add_event')
@@ -597,12 +591,29 @@ def search_student():
                 'EMAIL'] == search_text or str(std[i]['MOBILE']) == search_text:
                 search_result_index.append(i)
 
+        if len(search_result_index) == 0:
+            return render_template('admin/student.html', message="no result")
+
         search_result = []
         for i in range(len(search_result_index)):
             search_result.append(std[search_result_index[i]])
 
-        print(search_result)
     return render_template('admin/student.html', student=search_result)
+
+
+@app.route('/index.html')
+def index():
+    return render_template('main/index.html')
+
+
+@app.route('/events/index.html')
+def event_index():
+    return render_template('main/events/index.html')
+
+
+@app.route('/workshops/index.html')
+def workshop_index():
+    return render_template('main/workshops/index.html')
 
 
 # temparary
