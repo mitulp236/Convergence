@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Events</title>
+</head>
+<body>
+    {% for event in myevent %}
+        Event Id : {{ event.ID }}<br>
+        Event Name : {{ event.NAME }}<br>
+        Event Date : {{ event.DATE }}<br>
+        Event Time : {{ event.TIME }}<br>
+        Event Venue : {{ event.VENUE }}<br>
+        Event Description : {{ event.DESCRIPTION }}<br>
+        Event Rules : <br>{% set r = event.RULES %}
+                    {% set r1 = r.split("<br>") %}
+                    {% for rule in r1 %}
+                        {{ rule }}<br>
+                    {% endfor %}
+        <br>-----------------------------------------------------------------<br>
+    {% endfor %}
+</body>
+</html>

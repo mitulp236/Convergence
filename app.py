@@ -102,12 +102,36 @@ class Student_data(db.Model):
         return '<User %r>' % self.EMAIL
 
 
+class Events(db.Model):
+    ID = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    NAME = db.Column(db.String(50))
+    DATE = db.Column(db.String(50))
+    TIME = db.Column(db.String(50))
+    VENUE = db.Column(db.String(80))
+    DESCRIPTION = db.Column(db.String(5000))
+    RULES = db.Column(db.String(5000))
+    DEPARTMENT = db.Column(db.String(50))
+
+    def __init__(self, ID, NAME, DATE, DEPARTMENT, TIME, VENUE, DESCRIPTION, RULES):
+        self.ID = ID
+        self.NAME = NAME
+        self.DATE = DATE
+        self.DEPARTMENT = DEPARTMENT
+        self.TIME = TIME
+        self.VENUE = VENUE
+        self.DESCRIPTION = DESCRIPTION
+        self.RULES = RULES
+
+    def __repr__(self):
+        return '<User %r>' % self.NAME
+
+
 @app.route('/', methods=['POST', 'GET'])
 def home():
     if request.method == "POST":
         return "home"
     else:
-        return "<h1>home</h1>"
+        return "<h1>Home</h1>"
 
 
 @app.route('/admin', methods=['POST', 'GET'])
@@ -116,10 +140,25 @@ def admin():
         return render_template('backend/admin_login.html');
 
     if request.method == "POST":
-        session['admin_temp_var'] = 1;
-        myUsers = Student_data.query.all()
+        session['admin_temp_var'] = 1
+        student = Student_data.query.all()
+        std = []
+        for i in range(len(student)):
+            std.append({})
+        temp_i = 0;
+        for s in student:
+            std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
+                                'NAME': s.LASTNAME + ',' + s.FIRSTNAME,
+                                'ENROLLMENT_NO': s.ENROLLMENT_NO,
+                                'BRANCH': s.BRANCH,
+                                'SEM': s.SEM,
+                                'COLLEGE': s.COLLEGE,
+                                'EMAIL': s.EMAIL,
+                                'MOBILE': s.MOBILE})
+            temp_i += 1
         myCampaigner = Campaigner.query.all()
-        return render_template('admin/dashboard.html', myUsers=myUsers, myCampaigner=myCampaigner)
+        myEvents = Events.query.all()
+        return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner, myEvents=myEvents)
     else:
         myUsers = Users.query.all()
         myCampaigner = Campaigner.query.all()
@@ -209,6 +248,7 @@ def process():
     mobile = request.form['mobile']
     key = request.form['key']
     camp_id = session['camp_id']
+    print(str(camp_id))
     query = Campaigner.query.filter_by(CAMP_ID=camp_id, STATUS="active").first()
     if query is None:
         return jsonify({"result": "You Are on Frezze mode ! contact Admin"})
@@ -234,9 +274,10 @@ def process():
             return jsonify({"result": "Email is Already Registed ! type Othe Email !"})
 
         try:
-            query = Student_data(STUDENT_KEY=key, FIRSTNAME=fname, LASTNAME=lname, ENROLLMENT_NO="", BRANCH="", SEM="",
-                                 COLLEGE="", EMAIL=email, MOBILE=mobile, EVENT_1="", EVENT_2="", CAMP_ID=camp_id,
-                                 LAST_LOGIN="")
+            print('hello')
+            query = Student_data(STUDENT_KEY=key, FIRSTNAME=fname, LASTNAME=lname, ENROLLMENT_NO='', BRANCH='', SEM=0,
+                                 COLLEGE='', EMAIL=email, MOBILE=mobile, EVENT_1='', EVENT_2='', CAMP_ID=camp_id,
+                                 LAST_LOGIN='')
             db.session.add(query)
             db.session.commit()
             return jsonify({"result": "Register Successfully ! ", "ok": "ok"})
@@ -328,18 +369,19 @@ def camp_forgot_password():
 @app.route('/dashboard')
 def dash():
     if 'admin_temp_var' not in session:
-        return render_template('backend/admin_login.html');
+        return render_template('backend/admin_login.html')
 
     myUsers = Student_data.query.all()
     myCampaigner = Campaigner.query.all()
-    return render_template('admin/dashboard.html', myUsers=myUsers, myCampaigner=myCampaigner)
+    myEvents = Events.query.all()
+    return render_template('admin/dashboard.html', myUsers=myUsers, myCampaigner=myCampaigner, myEvents=myEvents)
 
 
 @app.route('/campaigner', defaults={'data': home})
 @app.route('/campaigner/<data>')
 def camp1(data, message='none'):
     if 'admin_temp_var' not in session:
-        return render_template('backend/admin_login.html');
+        return render_template('backend/admin_login.html')
 
     myCampaigner = Campaigner.query.all()
     return render_template('admin/campaigner.html', myCampaigner=myCampaigner, data=data, message=message)
@@ -354,7 +396,7 @@ def admin_logout():
 @app.route('/form-register-campaigner', methods=['POST'])
 def add_campaigner():
     if 'admin_temp_var' not in session:
-        return render_template('backend/admin_login.html');
+        return render_template('backend/admin_login.html')
     if request.method == 'POST':
         email = request.form['email']
         fname = request.form['firstname']
@@ -411,28 +453,28 @@ def change_camp_status():
 
 
 # events
-@app.route('/events', defaults={'action': None, 'id': None,'msg': None})
+@app.route('/events', defaults={'action': None, 'id': None, 'msg': None})
 @app.route('/events/<msg>', defaults={'action': None, 'id': None})
 @app.route('/events/<action>/<id>', defaults={'msg': None})
-def events(msg,action, id):
-    base_path = os.path.dirname(os.path.realpath(__file__))
-    xml_file = os.path.join(base_path, "data\\events.xml")
-    tree = et.parse(xml_file)
-    if action != None:
-        root = tree.getroot()
-        for r in root:
-            for event in r:
-                if (event.attrib["id"] == id):
-                    for sub_tag in event:
-                        if sub_tag.tag == "name":
-                            event_name = sub_tag.text
-                        if sub_tag.tag == "description":
-                            desc = sub_tag.text
-        return render_template('admin/events.html', xml=tree, action=action, id=id,event_name=event_name,desc=desc)
-    elif msg == 'success':
-        return render_template('admin/events.html', xml=tree,msg='success')
-    else:
-        return render_template('admin/events.html', xml=tree)
+def events(msg, action, id):
+    try:
+        if action == "description" or action == "rules":
+            myevent = Events.query.filter_by(ID=id).first()
+            return render_template('admin/events.html', myevent=myevent, action=action)
+        elif action == "delete":
+
+            d = Events.query.filter_by(ID=id).first()
+            db.session.delete(d)
+            db.session.commit()
+            myevent = Events.query.all()
+            return render_template('admin/events.html', myevent=myevent, message='home', msg="deleted")
+
+        else:
+            myevent = Events.query.all()
+            return render_template('admin/events.html', myevent=myevent, message='home')
+    except:
+        myevent = Events.query.all()
+        return render_template('admin/events.html', myevent=myevent, message='home', msg="error")
 
 
 # @app.route('/edit_desc/<id>',methods=['POST'])
@@ -454,10 +496,120 @@ def events(msg,action, id):
 
 @app.route('/add_event')
 def add_event():
-    base_path = os.path.dirname(os.path.realpath(__file__))
-    xml_file = os.path.join(base_path, "data\\events.xml")
-    tree = et.parse(xml_file)
-    return render_template('admin/add_event.html',xml=tree, msg='add_event')
+    return render_template('admin/add_event.html')
+
+
+@app.route('/add_event_next', methods=['POST'])
+def add_event_next():
+    session['event_name'] = request.form['name']
+    session['event_date'] = request.form['date']
+    session['event_time'] = request.form['time']
+    session['event_venue'] = request.form['venue']
+    session['event_description'] = request.form['description']
+    session['event_rules_count'] = request.form['rules']
+    session['department'] = request.form['department']
+    if len(session['event_name']) == 0 or len(session['event_date']) == 0 or len(session['event_time']) == 0 or len(
+            session['event_venue']) == 0 or len(session['event_description']) == 0 or len(
+        session['event_rules_count']) == 0:
+        return render_template('admin/add_event.html', msg='empty field')
+    else:
+        return render_template("admin/add_event.html", status=session['event_rules_count'])
+
+
+@app.route('/add_rules', methods=['POST'])
+def add_rules():
+    event_name = session['event_name']
+    event_date = session['event_date']
+    event_time = session['event_time']
+    event_venue = session['event_venue']
+    event_depatment = session['department']
+    event_description = session['event_description']
+    rules = '';
+    count = request.form['count']
+    for i in range(int(count)):
+        rules += (str(i + 1) + ". " + request.form[str(i)] + "<br>")
+
+    # DATE
+    d = str(event_date).split('-');
+    date = d[2] + "/" + d[1] + "/" + d[0]
+
+    myevents = Events(ID=None, NAME=event_name, DATE=date, DEPARTMENT=event_depatment, TIME=event_time,
+                      VENUE=event_venue, DESCRIPTION=event_description, RULES=rules)
+    db.session.add(myevents)
+    db.session.commit()
+    myevent = Events.query.all()
+    return render_template('admin/events.html', myevent=myevent, message='home', msg='success')
+
+
+@app.route('/students')
+def students():
+    student = Student_data.query.all()
+
+    std = []
+    for i in range(len(student)):
+        std.append({})
+    temp_i = 0;
+    for s in student:
+        std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
+                            'FIRSTNAME': s.FIRSTNAME,
+                            'LASTNAME': s.LASTNAME,
+                            'ENROLLMENT_NO': s.ENROLLMENT_NO,
+                            'BRANCH': s.BRANCH,
+                            'SEM': s.SEM,
+                            'COLLEGE': s.COLLEGE,
+                            'EMAIL': s.EMAIL,
+                            'MOBILE': s.MOBILE})
+        temp_i += 1
+
+    print(std)
+
+    return render_template('admin/student.html', student=std)
+
+
+@app.route('/search_student', methods=['POST'])
+def search_student():
+    if request.method == 'POST':
+        search_text = request.form['search'];
+        student = Student_data.query.all()
+
+        search_result_index = []
+        std = []
+        for i in range(len(student)):
+            std.append({})
+        temp_i = 0;
+        for s in student:
+            std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
+                                'FIRSTNAME': s.FIRSTNAME,
+                                'LASTNAME': s.LASTNAME,
+                                'ENROLLMENT_NO': s.ENROLLMENT_NO,
+                                'BRANCH': s.BRANCH,
+                                'SEM': s.SEM,
+                                'COLLEGE': s.COLLEGE,
+                                'EMAIL': s.EMAIL,
+                                'MOBILE': s.MOBILE})
+            temp_i += 1
+
+        for i in range(len(std)):
+            if std[i]['STUDENT_KEY'] == search_text or std[i]['FIRSTNAME'] == search_text or std[i][
+                'LASTNAME'] == search_text or str(std[i]['ENROLLMENT_NO']) == search_text or std[i][
+                'BRANCH'] == search_text or \
+                    str(std[i]['SEM']) == search_text or std[i]['COLLEGE'] == search_text or std[i][
+                'EMAIL'] == search_text or str(std[i]['MOBILE']) == search_text:
+                search_result_index.append(i)
+
+        search_result = []
+        for i in range(len(search_result_index)):
+            search_result.append(std[search_result_index[i]])
+
+        print(search_result)
+    return render_template('admin/student.html', student=search_result)
+
+
+# temparary
+# @app.route('/view_events')
+# def view_events():
+#     myevent = Events.query.all()
+#     return render_template("/view_events.html",myevent=myevent)
 
 
 if __name__ == '__main__':

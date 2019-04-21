@@ -16,60 +16,99 @@
         <button class="uk-modal-close-full uk-close-large" type="button" uk-close onclick="closeModal()"></button>
         <div class="uk-grid-collapse uk-child-width-1-1@s uk-flex-middle" uk-grid>
             <div uk-height-viewport>
-                <form>
-                    <div class="row">
-                        <div class="col m4" style="margin-left: 50px">
-                            <div class="row">
-                                <div class="col m10 input-field">
-                                    <input type="text" id="name" name="name"/>
-                                    <label for="name">Event Name</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col m10">
-                                    Event Date : <input type="date" class="datepicker">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col m10 input-field">
-                                    <input type="text" id="time" name="time"/>
-                                    <label for="time">Event Time</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col m10 input-field">
-                                    <input type="text" id="venue" name="venue"/>
-                                    <label for="venue">Venue</label>
-                                </div>
-                            </div>
 
-                        </div>
+                {% if msg == 'empty field' %}
+                    <div class="row">
+                    <div class="col m3"></div>
                         <div class="col m6">
-                            <fieldset>
-                                <legend>Description & Rules</legend>
-                                <div class="row">
-                                    <div class="col m1"></div>
-                                    <div class="col m10 input-field">
-                                        <textarea id="textbox" class="materialize-textarea"
-                                                  name="description"></textarea>
-                                        <label for="textbox">Description</label>
-                                    </div>
-                                    <div class="col m1"></div>
-                                </div>
-                                <div class="row">
-                                    <div class="col m1"></div>
-                                    <div class="col m10 input-field">
-                                        <div class="row">
-                                            <div class="col m4"> Number of Rules :</div>
-                                            <div class="col m8"><input type="number" id="rules"/></div>
-                                        </div>
-                                    </div>
-                                    <div class="col m1"></div>
-                                </div>
-                            </fieldset>
+                            <div class="uk-alert-danger" uk-alert>
+                                <a class="uk-alert-close" uk-close></a>
+                                <p>"All fields are mandatory !"</p>
+                            </div>
                         </div>
                     </div>
-                </form>
+                {% endif %}
+
+                {% if status %}
+                    <form action="/add_rules" method="post">
+                        {% set number = status | int %}
+                        {% for i in range(number) %}
+                            {{ i + 1 }}.<input type="text" name="{{ i }}"/>
+                        {% endfor %}
+                        <input type="hidden" name="count" value="{{ status }}"/>
+                        <input type="submit" value="Submit"/>
+                    </form>
+                {% else %}
+                    <form action="add_event_next" method="post">
+                        <div class="row" style="margin-top: 20px">
+                            <div class="col m4" style="margin-left: 50px">
+                                <div class="row">
+                                    <div class="col m10">
+                                        Department:
+                                        <select class="uk-select" name="department">
+                                            <option>Computer Engineering</option>
+                                            <option>Information Technology</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col m10 input-field">
+                                        <input type="text" id="name" name="name"/>
+                                        <label for="name">Event Name</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col m10">
+                                        Event Date : <input type="date" name="date" class="datepicker">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col m10 input-field">
+                                        <input type="text" id="time" name="time"/>
+                                        <label for="time">Event Time</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col m10 input-field">
+                                        <input type="text" id="venue" name="venue"/>
+                                        <label for="venue">Venue</label>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col m6">
+                                <fieldset>
+                                    <legend>Description & Rules</legend>
+                                    <div class="row">
+                                        <div class="col m1"></div>
+                                        <div class="col m10 input-field">
+                                        <textarea id="textbox" class="materialize-textarea"
+                                                  name="description"></textarea>
+                                            <label for="textbox">Description</label>
+                                        </div>
+                                        <div class="col m1"></div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col m1"></div>
+                                        <div class="col m10 input-field">
+                                            <div class="row">
+                                                <div class="col m4"> Number of Rules :</div>
+                                                <div class="col m8"><input type="number" name="rules" min="1"
+                                                                           id="rules"/></div>
+                                            </div>
+                                        </div>
+                                        <div class="col m1"></div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col m12 center">
+                                <button class="btn" type="submit">Next</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
             </div>
 
         </div>
@@ -88,6 +127,26 @@
     function closeModal() {
         window.location.href = "/events";
     }
+
+    $(document).delegate('#textbox', 'keydown', function (e) {
+        var keyCode = e.keyCode || e.which;
+
+        if (keyCode == 9) {
+            e.preventDefault();
+            var start = this.selectionStart;
+            var end = this.selectionEnd;
+
+            // set textarea value to: text before caret + tab + text after caret
+            $(this).val($(this).val().substring(0, start)
+                + "\t"
+                + $(this).val().substring(end));
+
+            // put caret at right position again
+            this.selectionStart =
+                this.selectionEnd = start + 1;
+        }
+    });
 </script>
+
 </body>
 </html>

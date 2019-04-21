@@ -3,28 +3,43 @@
 {% block content %}
     <div class="row">
         <div class="col m4">
-            <div class="uk-card uk-card-primary uk-card-body">
-                <div class="col m6">
-                    <div class="card-text">Total Student Enrolled</div>
-                </div>
-                <div class="col m6 flow-text "><span
-                        style="font-size: x-large;font-weight: bold;color: black">: {{ myUsers|length }}</span></div>
-            </div>
-        </div>
-        <div class="col m4">
-            <a href="/campaigner/home">
+            <a href="/students">
                 <div class="uk-card uk-card-primary uk-card-body">
                     <div class="col m6">
-                        <div class="card-text">Total Campaigner</div>
+                        <div class="card-text">Total Student Enrolled</div>
                     </div>
                     <div class="col m6 flow-text "><span
-                            style="font-size: x-large;font-weight: bold;color: black">: {{ myCampaigner|length }}</span>
+                            style="font-size: x-large;font-weight: bold;color: black">: {{ student|length }}</span>
                     </div>
                 </div>
             </a>
         </div>
         <div class="col m4">
+            <a href="/campaigner/home">
+                <div class="uk-card uk-card-primary uk-card-body">
+                    <div class="row">
+                        <div class="col m6">
+                            <div class="card-text">Total Campaigner</div>
+                        </div>
+                        <div class="col m6 flow-text "><span
+                                style="font-size: x-large;font-weight: bold;color: black">: {{ myCampaigner|length }}</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col m4">
+            <a href="/events">
+                <div class="uk-card uk-card-primary uk-card-body">
+                    <div class="col m6">
+                        <div class="card-text">Total<br> Events</div>
+                    </div>
+                    <div class="col m6 flow-text "><span
+                            style="font-size: x-large;font-weight: bold;color: black">: {{ myEvents|length }}</span>
+                    </div>
 
+                </div>
+            </a>
         </div>
     </div>
     <div class="row">

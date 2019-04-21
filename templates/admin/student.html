@@ -1,0 +1,45 @@
+{% extends 'admin/index.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col m1"></div>
+        <div class="col m6">
+            <div class="row">
+                <form action="/search_student" method="post">
+                    <div class="col m9 white">
+                        <input type="text" name="search" placeholder="Search"/>
+                    </div>
+                    <div class="col m3"><button type="submit" class="btn">Search</button></div>
+                </form>
+            </div>
+        </div>
+        <div class="col m5"></div>
+    </div>
+    <div class="row">
+        <table>
+            <tr>
+                <th>Key</th>
+                <th>Name</th>
+                <th>Enrollment</th>
+                <th>Branch</th>
+                <th>Sem</th>
+                <th>College</th>
+                <th>Email</th>
+                <th>Mobile</th>
+            </tr>
+            {% for i in range(student|length) %}
+                <tr>
+                    <td>{{ student[i]['STUDENT_KEY'] }}</td>
+                    <td>{{ student[i]['LASTNAME'] }}, {{ student[i]['FIRSTNAME'] }}</td>
+                    <td>{{ student[i]['ENROLLMENT_NO'] }}</td>
+                    <td>{{ student[i]['BRANCH'] }}</td>
+                    <td>{{ student[i]['SEM'] }}</td>
+                    <td>{{ student[i]['COLLEGE'] }}</td>
+                    <td>{{ student[i]['EMAIL'] }}</td>
+                    <td>{{ student[i]['MOBILE'] }}</td>
+                </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+{% endblock %}

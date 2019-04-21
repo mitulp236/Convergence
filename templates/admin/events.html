@@ -13,11 +13,22 @@
         </div>
     </div>
 
-
+    {% if msg == 'error' %}
+        <div class="uk-alert-danger" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p>Error Occurred !</p>
+        </div>
+    {% endif %}
     {% if msg == 'success' %}
         <div class="uk-alert-success" uk-alert>
             <a class="uk-alert-close" uk-close></a>
-            <p>Description updated successfully.</p>
+            <p>Event added successfully.</p>
+        </div>
+    {% endif %}
+    {% if msg == 'deleted' %}
+        <div class="uk-alert-success" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <p>Event deleted successfully.</p>
         </div>
     {% endif %}
     {% if action == "description" %}
@@ -28,8 +39,8 @@
         <div id="modal-example" uk-modal>
             <div class="uk-modal-dialog uk-modal-body">
 
-                <h2 class="uk-modal-title">Description - {{ event_name }}</h2>
-                <p>{{ desc }}</p>
+                <h2 class="uk-modal-title">Description - {{ myevent.NAME }}</h2>
+                <p>{{ myevent.DESCRIPTION }}</p>
                 <p class="uk-text-right">
                     <a class="uk-button uk-button-default" href="/events"> Close</a>
                 </p>
@@ -40,47 +51,72 @@
         </div>
     {% endif %}
     {% if action == "rules" %}
-        {{ id }}
-    {% endif %}
-    <table class="responsive-table highlight">
-        <tr>
-            <th>Department</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Venue</th>
-            <th></th>
-            <th></th>
-        </tr>
-        {% set root = xml.getroot() %}
-        {% for r in root %}
-            <tr>
-                <td>{{ r.attrib['name'] }}</td>
-                {% for event in r %}
-                    {% set event_id = event.attrib["id"] %}
-                    {% for sub_tag in event %}
-                        {% if sub_tag.tag != "description" %}
-                            <td>{{ sub_tag.text }}</td>
-                        {% endif %}
+        <!-- This is an anchor toggling the modal -->
+        <a href="#modal-example" uk-toggle style="display: none" id="rule">Open</a>
 
+        <!-- This is the modal -->
+        <div id="modal-example" uk-modal>
+            <div class="uk-modal-dialog uk-modal-body">
+
+                <h2 class="uk-modal-title">Rules - {{ myevent.NAME }}</h2>
+                <p>
+                    {% set r = myevent.RULES %}
+                    {% set r1 = r.split("<br>") %}
+                    {% for rule in r1 %}
+                        {{ rule }}<br>
                     {% endfor %}
+                </p>
+                <p class="uk-text-right">
+                    <a class="uk-button uk-button-default" href="/events"> Close</a>
+                </p>
+
+                </form>
+
+            </div>
+        </div>
+    {% endif %}
+    {% if message == "home" %}
+        <table class="responsive-table highlight">
+            <tr>
+                <th>Department</th>
+                <th>Name</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Venue</th>
+                <th></th>
+            </tr>
+
+            {% for event in myevent %}
+                <tr>
+                    <td>{{ event.DEPARTMENT }}</td>
+                    <td>{{ event.NAME }}</td>
+                    <td>{{ event.DATE }}</td>
+                    <td>{{ event.TIME }}</td>
+                    <td>{{ event.VENUE }}</td>
                     <td>
+
                         <div class="uk-button-group">
                             <a class="uk-button uk-button-primary"
-                               href="/events/description/{{ event_id }}">Description</a>
-                            <a class="uk-button uk-button-danger" href="/events/rules/{{ event_id }}">Rules</a>
+                               href="/events/description/{{ event.ID }}">Description</a>
+                            <a class="uk-button uk-button-danger" href="/events/rules/{{ event.ID }}">Rules</a>
+                            <a class="uk-button uk-button-danger" style="background-color: lightslategrey"
+                               href="/events/delete/{{ event.ID }}">Delete</a>
+
                         </div>
                     </td>
-                {% endfor %}
-            </tr>
-        {% endfor %}
-    </table>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endblock %}
 {% block script %}
     <script>
 
         {% if action == "description" %}
             document.getElementById('desc').click();
+        {% endif %}
+        {% if action == "rules" %}
+            document.getElementById('rule').click();
         {% endif %}
         $(document).delegate('#textbox', 'keydown', function (e) {
             var keyCode = e.keyCode || e.which;
@@ -107,3 +143,5 @@
 
     </script>
 {% endblock %}
+
+
