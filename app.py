@@ -142,7 +142,7 @@ def admin():
         std = []
         for i in range(len(student)):
             std.append({})
-        temp_i = 0;
+        temp_i = 0
         for s in student:
             std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
                                 'NAME': s.LASTNAME + ',' + s.FIRSTNAME,
@@ -372,7 +372,7 @@ def dash():
     std = []
     for i in range(len(student)):
         std.append({})
-    temp_i = 0;
+    temp_i = 0
     for s in student:
         std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
                             'NAME': s.LASTNAME + ',' + s.FIRSTNAME,
@@ -458,7 +458,7 @@ def change_camp_status():
         update_camp.STATUS = 'freeze'
     else:
         update_camp.STATUS = 'active'
-    db.session.commit();
+    db.session.commit()
 
     return jsonify({'msg': 'success'})
 
@@ -563,7 +563,7 @@ def students():
 @app.route('/search_student', methods=['POST'])
 def search_student():
     if request.method == 'POST':
-        search_text = request.form['search'];
+        search_text = request.form['search']
         student = Student_data.query.all()
 
         search_result_index = []
@@ -614,6 +614,7 @@ def event_index():
 @app.route('/workshops/index.html')
 def workshop_index():
     return render_template('main/workshops/index.html')
+
 
 
 # temparary
