@@ -616,12 +616,38 @@ def workshop_index():
     return render_template('main/workshops/index.html')
 
 
-
 # temparary
-# @app.route('/view_events')
-# def view_events():
-#     myevent = Events.query.all()
-#     return render_template("/view_events.html",myevent=myevent)
+@app.route('/event_view', defaults={'dept': None})
+@app.route('/event_view/<dept>')
+def view_events(dept):
+    myevent = Events.query.all()
+    l = []
+    for e in myevent:
+        l.append(
+            {'id': e.ID, 'name': e.NAME, 'date': e.DATE, 'time': e.TIME, 'venue': e.VENUE, 'description': e.DESCRIPTION,
+             'rules': e.RULES, 'department': e.DEPARTMENT})
+
+    sorted_l = sorted(l, key=lambda i: i['department'])
+    m = {}
+    previous_event = ''
+    for event in sorted_l:
+        if previous_event != event['department']:
+            m.update({event['department']: []})
+
+    for event in sorted_l:
+        m[event['department']].append(
+            {'id': event['id'], 'name': event['name'], 'date': event['date'], 'time': event['time'],
+             'venue': event['venue'], 'description': event['description'], 'rules': event['rules']})
+
+
+    selected_department = ''
+    if dept == None:
+        selected_department = sorted_l[0]['department']
+    else:
+        selected_department = dept
+
+    print(m[selected_department])
+    return render_template("event_view.html", myevent=m, selected_department=selected_department)
 
 
 if __name__ == '__main__':

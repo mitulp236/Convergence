@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.css">
+
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/css/uikit.min.css"/>
+
+    <title>Events</title>
+    <style>
+        .full-height {
+            height: 100vh;
+        }
+    </style>
+</head>
+<body>
+<!-- Display Event Information -->
+<!-- This is an anchor toggling the modal -->
+<a href="#modal-example" uk-toggle style="display: none" id="event_info">Open</a>
+
+<!-- This is the modal -->
+<div id="modal-example" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+
+        <h2 class="uk-modal-title">
+            <div id="event_name"></div>
+        </h2>
+
+        <span>Date</span><br>
+        <div id="event_date">
+
+        </div>
+        <br>
+
+        <span>Time</span><br>
+        <div id="event_time">
+
+        </div>
+        <br>
+
+        <span>Venue</span><br>
+        <div id="event_venue">
+
+        </div>
+        <br>
+
+        <span>Description</span><br>
+        <div id="event_description">
+
+        </div>
+        <br>
+        <span>Rules</span><br>
+        <div id="event_rules">
+
+        </div>
+        <p class="uk-text-right">
+            <a class="uk-button uk-button-default" href=""> Close</a>
+        </p>
+
+        </form>
+
+    </div>
+</div>
+<!-- Ends -->
+<div class="row full-height">
+    <div class="col m6 white-text animated slideInUp full-height" style="background-color: #474747">
+        <div class="row">
+            <div class="col m6" style="background-color: #262525">
+                <div class="row" style="height: 65vh;">
+                    {% for l in range(myevent[selected_department] | length) %}
+                        <a onclick="view({{ myevent[selected_department][l]['id'] }},'{{ selected_department }}')">{{ myevent[selected_department][l]['name'] }}</a>
+                        <br>
+                    {% endfor %}
+                </div>
+
+                <div class="row" style="height: 35vh;">
+                    //register button goes here
+
+                </div>
+            </div>
+            <div class="col m6">
+            </div>
+        </div>
+
+    </div>
+    <div class="col m6 white-text animated slideInDown full-height center" style="background-color: #2d2d2d">
+        {% for department in myevent %}
+            <a href="/event_view/{{ department }}">{{ department }}</a><br>
+        {% endfor %}
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<!-- UIkit JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.3/js/uikit-icons.min.js"></script>
+<script>
+    function view(id, dept) {
+
+        event_name = document.getElementById('event_name');
+        event_date = document.getElementById('event_date');
+        event_time = document.getElementById('event_time');
+        event_venue = document.getElementById('event_venue');
+        event_description = document.getElementById('event_description');
+        event_rules = document.getElementById('event_rules');
+
+        alert('hello' + id + ' : ' + dept);
+        {% for l in range(myevent[selected_department] | length) %}
+            if ('{{ myevent[selected_department][l]['id'] }}' == id) {
+
+                event_name.innerHTML = '{{ myevent[selected_department][l]['name'] }}';
+                event_date.innerHTML = '{{ myevent[selected_department][l]['date'] }}';
+                event_time.innerHTML = '{{ myevent[selected_department][l]['time'] }}';
+                event_venue.innerHTML = '{{ myevent[selected_department][l]['venue'] }}';
+
+
+                var des = '';
+                {% set d = myevent[selected_department][l]['description'].splitlines() %}
+                {% for de in d %}
+                    des += '{{ de }}<br>'
+                {% endfor %}
+                event_description.innerHTML = des;
+                var rule = '';
+                {% set r = myevent[selected_department][l]['rules'].split('<br>') %}
+                {% for de in r %}
+                    rule += '{{ de }}<br>'
+                {% endfor %}
+                event_rules.innerHTML = rule;
+            }
+        {% endfor %}
+
+        document.getElementById('event_info').click();
+    }
+</script>
+</body>
+</html>
