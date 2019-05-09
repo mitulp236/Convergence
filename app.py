@@ -2,6 +2,7 @@ import smtplib
 from flask import Flask, request, render_template, jsonify, redirect, session, url_for
 import random
 import string
+import pymysql
 from functools import wraps
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
@@ -9,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.secret_key = "jhsldfsakdfh23kjnk23h1j23g12kj3b12"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://c_2k19:c_2k19_convergence@localhost:3306/convergence2k19'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/convergence2k19-mitul'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
@@ -19,7 +20,7 @@ manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
 
-# password from admin to check campaigner password
+# password from admin to check campaigner's password
 display_password = "123@abc"
 
 
