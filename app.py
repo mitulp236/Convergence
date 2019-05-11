@@ -25,10 +25,10 @@ display_password = "123@abc"
 
 
 class Users(db.Model):
-    ID = db.Column(db.Integer, primary_key=True)
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EMAIL = db.Column(db.String(80), unique=True, nullable=False)
-    PASSWORD = db.Column(db.String(120), unique=True, nullable=False)
-    PRIVILEGE = db.Column(db.String(10), unique=True, nullable=False)
+    PASSWORD = db.Column(db.String(120), nullable=False)
+    PRIVILEGE = db.Column(db.String(30), nullable=False)
 
     def __init__(self, EMAIL, PASSWORD, PRIVILEGE):
         self.EMAIL = EMAIL
@@ -136,30 +136,29 @@ def admin():
         return render_template('backend/admin_login.html');
 
     if request.method == "POST":
-        session['admin_temp_var'] = 1
-        student = Student_data.query.all()
-        std = []
-        for i in range(len(student)):
-            std.append({})
-        temp_i = 0
-        for s in student:
-            std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
-                                'NAME': s.LASTNAME + ',' + s.FIRSTNAME,
-                                'ENROLLMENT_NO': s.ENROLLMENT_NO,
-                                'BRANCH': s.BRANCH,
-                                'SEM': s.SEM,
-                                'COLLEGE': s.COLLEGE,
-                                'EMAIL': s.EMAIL,
-                                'MOBILE': s.MOBILE})
-            temp_i += 1
-        myCampaigner = Campaigner.query.all()
-        myEvents = Events.query.all()
-        return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner, myEvents=myEvents)
+        email = request.form['email'];
+        password = request.form['password'];
+        admin_info = Users.query.filter_by(EMAIL=email, PASSWORD=password).first()
+        if admin_info:
+            id = admin_info.ID
+            credential = admin_info.PRIVILEGE
+            session['admin_id'] = id
+            session['admin_credential'] = credential
+            if credential == 'root':
+                student = Student_data.query.all()
+                myCampaigner = Campaigner.query.all()
+                myEvents = Events.query.all()
+            else:
+                student = Student_data.query.filter_by(BRANCH=credential)
+                myCampaigner = Campaigner.query.filter_by(BRANCH=credential)
+                myEvents = Events.query.filter_by(DEPARTMENT=credential)
+
+            return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner,
+                                   myEvents=myEvents)
+        else:
+            return render_template("backend/admin_login.html", message='Incorrect Username or Password !')
     else:
-        myUsers = Users.query.all()
-        myCampaigner = Campaigner.query.all()
-        return render_template('backend/admin_login.html', myUsers=myUsers, myCampaigner=myCampaigner)
-        # return render_template("backend/admin_login.html")
+        return render_template("backend/admin_login.html")
 
 
 def auth(f):
@@ -183,6 +182,7 @@ def logout():
 
 @app.route('/camp_dashboard/<camp_id>', methods=['POST', 'GET'])
 def camp_dashboard(camp_id):
+
     if request.method == "POST":
         return "camp post"
     else:
@@ -364,36 +364,47 @@ def camp_forgot_password():
 
 @app.route('/dashboard')
 def dash():
-    if 'admin_temp_var' not in session:
+    if 'admin_id' not in session:
         return render_template('backend/admin_login.html')
 
-    student = Student_data.query.all()
-    std = []
-    for i in range(len(student)):
-        std.append({})
-    temp_i = 0
-    for s in student:
-        std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
-                            'NAME': s.LASTNAME + ',' + s.FIRSTNAME,
-                            'ENROLLMENT_NO': s.ENROLLMENT_NO,
-                            'BRANCH': s.BRANCH,
-                            'SEM': s.SEM,
-                            'COLLEGE': s.COLLEGE,
-                            'EMAIL': s.EMAIL,
-                            'MOBILE': s.MOBILE})
-        temp_i += 1
-    myCampaigner = Campaigner.query.all()
-    myEvents = Events.query.all()
+    # student = Student_data.query.all()
+    # std = []
+    # for i in range(len(student)):
+    #     std.append({})
+    # temp_i = 0
+    # for s in student:
+    #     std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
+    #                         'NAME': s.LASTNAME + ',' + s.FIRSTNAME,
+    #                         'ENROLLMENT_NO': s.ENROLLMENT_NO,
+    #                         'BRANCH': s.BRANCH,
+    #                         'SEM': s.SEM,
+    #                         'COLLEGE': s.COLLEGE,
+    #                         'EMAIL': s.EMAIL,
+    #                         'MOBILE': s.MOBILE})
+    #     temp_i += 1
+    # myCampaigner = Campaigner.query.all()
+    # myEvents = Events.query.all()
+    if session['admin_credential'] == 'root':
+        student = Student_data.query.all()
+        myCampaigner = Campaigner.query.all()
+        myEvents = Events.query.all()
+    else:
+        student = Student_data.query.filter_by(BRANCH=session['admin_credential'])
+        myCampaigner = Campaigner.query.filter_by(BRANCH=session['admin_credential'])
+        myEvents = Events.query.filter_by(DEPARTMENT=session['admin_credential'])
     return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner, myEvents=myEvents)
 
 
 @app.route('/campaigner', defaults={'data': home})
 @app.route('/campaigner/<data>')
 def camp1(data, message='none'):
-    if 'admin_temp_var' not in session:
+    if 'admin_id' not in session:
         return render_template('backend/admin_login.html')
 
-    myCampaigner = Campaigner.query.all()
+    if session['admin_credential'] == 'root':
+        myCampaigner = Campaigner.query.all()
+    else:
+        myCampaigner = Campaigner.query.filter_by(BRANCH=session['admin_credential'])
     return render_template('admin/campaigner.html', myCampaigner=myCampaigner, data=data, message=message)
 
 
@@ -405,8 +416,9 @@ def admin_logout():
 
 @app.route('/form-register-campaigner', methods=['POST'])
 def add_campaigner():
-    if 'admin_temp_var' not in session:
+    if 'admin_id' not in session:
         return render_template('backend/admin_login.html')
+
     if request.method == 'POST':
         email = request.form['email']
         fname = request.form['firstname']
@@ -438,6 +450,9 @@ def id_generator(size=6, chars=string.ascii_uppercase + string.digits):
 
 @app.route('/show_camp_password', methods=['POST'])
 def show_camp_password():
+    if 'admin_id' not in session:
+        return render_template('backend/admin_login.html')
+
     campid = request.form['camp_id']
     enteredpassword = request.form['validatepassword']
     if enteredpassword == display_password:
@@ -449,6 +464,9 @@ def show_camp_password():
 
 @app.route('/change_camp_status', methods=['POST'])
 def change_camp_status():
+    if 'admin_id' not in session:
+        return render_template('backend/admin_login.html')
+
     campid = request.form['camp_id']
     status = request.form['status']
     update_camp = Campaigner.query.filter_by(CAMP_ID=campid).first()
@@ -467,6 +485,8 @@ def change_camp_status():
 @app.route('/events/<msg>', defaults={'action': None, 'id': None})
 @app.route('/events/<action>/<id>', defaults={'msg': None})
 def events(msg, action, id):
+    if 'admin_id' not in session:
+        return render_template('backend/admin_login.html')
     try:
         if action == "description" or action == "rules":
             myevent = Events.query.filter_by(ID=id).first()
@@ -480,20 +500,32 @@ def events(msg, action, id):
             return render_template('admin/events.html', myevent=myevent, message='home', msg="deleted")
 
         else:
-            myevent = Events.query.all()
+            if session['admin_credential'] == 'root':
+                myevent = Events.query.all()
+            else:
+                myevent = Events.query.filter_by(DEPARTMENT=session['admin_credential'])
+
             return render_template('admin/events.html', myevent=myevent, message='home')
     except:
-        myevent = Events.query.all()
+        if session['admin_credential'] == 'root':
+            myevent = Events.query.all()
+        else:
+            myevent = Events.query.filter_by(DEPARTMENT=session['admin_credential'])
         return render_template('admin/events.html', myevent=myevent, message='home', msg="error")
 
 
 @app.route('/add_event')
 def add_event():
+    if 'admin_id' not in session:
+        return render_template('backend/admin_login.html')
     return render_template('admin/add_event.html')
 
 
 @app.route('/add_event_next', methods=['POST'])
 def add_event_next():
+    if 'admin_id' not in session:
+        return render_template('backend/admin_login.html')
+
     session['event_name'] = request.form['name']
     session['event_date'] = request.form['date']
     session['event_time'] = request.form['time']
@@ -511,6 +543,9 @@ def add_event_next():
 
 @app.route('/add_rules', methods=['POST'])
 def add_rules():
+    if 'admin_id' not in session:
+        return render_template('backend/admin_login.html')
+
     event_name = session['event_name']
     event_date = session['event_date']
     event_time = session['event_time']
@@ -530,16 +565,33 @@ def add_rules():
                       VENUE=event_venue, DESCRIPTION=event_description, RULES=rules)
     db.session.add(myevents)
     db.session.commit()
-    myevent = Events.query.all()
+    if session['admin_credential'] == 'root':
+        myevent = Events.query.all()
+    else:
+        myevent = Events.query.filter_by(DEPARTMENT=session['admin_credential'])
     return render_template('admin/events.html', myevent=myevent, message='home', msg='success')
 
 
 @app.route('/students')
 def students():
-    student = Student_data.query.all()
+    if 'admin_id' not in session:
+        return render_template('backend/admin_login.html')
+
+    std = list_student_date()
+    return render_template('admin/student.html', student=std)
+
+
+def list_student_date():
+    if session['admin_credential'] == 'root':
+        student = Student_data.query.all()
+        student_length = len(student)
+    else:
+        student = Student_data.query.filter_by(BRANCH=session['admin_credential'])
+        student_length = student.count()
+
 
     std = []
-    for i in range(len(student)):
+    for i in range(student_length):
         std.append({})
     temp_i = 0;
     for s in student:
@@ -554,20 +606,30 @@ def students():
                             'MOBILE': s.MOBILE})
         temp_i += 1
 
-    print(std)
-
-    return render_template('admin/student.html', student=std)
+    return std
 
 
 @app.route('/search_student', methods=['POST'])
 def search_student():
+    if 'admin_id' not in session:
+        return render_template('backend/admin_login.html')
+
     if request.method == 'POST':
         search_text = request.form['search']
-        student = Student_data.query.all()
+        if search_text == '':
+            std = list_student_date()
+            return render_template('admin/student.html', student=std)
+
+        if session['admin_credential'] == 'root':
+            student = Student_data.query.all()
+            student_length = len(student)
+        else:
+            student = Student_data.query.filter_by(BRANCH=session['admin_credential'])
+            student_length = student.count()
 
         search_result_index = []
         std = []
-        for i in range(len(student)):
+        for i in range(student_length):
             std.append({})
         temp_i = 0;
         for s in student:
@@ -637,7 +699,6 @@ def view_events(dept):
         m[event['department']].append(
             {'id': event['id'], 'name': event['name'], 'date': event['date'], 'time': event['time'],
              'venue': event['venue'], 'description': event['description'], 'rules': event['rules']})
-
 
     selected_department = ''
     if dept == None:

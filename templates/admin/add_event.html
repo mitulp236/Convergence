@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
     <style>
-        .btnsubmit:hover{
+        .btnsubmit:hover {
             background-color: lawngreen;
             color: white;
         }
@@ -64,7 +64,7 @@
                 {% else %}
                     <div class="row center">
                         <span class="flow-text">Add Event</span>
-                    <hr class="uk-divider-icon">
+                        <hr class="uk-divider-icon">
                     </div>
                     <div class="row">
                         <form action="add_event_next" method="post">
@@ -74,27 +74,32 @@
                                         <div class="col m10">
                                             Department:
                                             <select class="uk-select" name="department">
-                                                <option value="Information Technology">Information Technology
-                                                </option>
-                                                <option value="Computer Engineering">Computer Engineering</option>
-                                                <option value="Electronics & Comm. Engg.">Electronics & Comm.
-                                                    Engg.
-                                                </option>
-                                                <option value="Bio-Medical Engineering">Bio-Medical Engineering
-                                                </option>
-                                                <option value="Mechanical Engineering">Mechanical Engineering
-                                                </option>
-                                                <option value="Mechatronics Engineering">Mechatronics Engineering
-                                                </option>
-                                                <option value="Civil Engineering">Civil Engineering</option>
-                                                <option value="Electrical Engineering">Electrical Engineering
-                                                </option>
-                                                <option value="Marine Engineering">Marine Engineering</option>
-                                                <option value="Automobile Engineering">Automobile Engineering
-                                                </option>
-                                                <option value="Humanity & Science Department">Humanity & Science
-                                                    Department
-                                                </option>
+                                                {% if session['admin_credential'] == 'root' %}
+                                                    <option value="Information Technology">Information Technology
+                                                    </option>
+                                                    <option value="Computer Engineering">Computer Engineering</option>
+                                                    <option value="Electronics & Comm. Engg.">Electronics & Comm.
+                                                        Engg.
+                                                    </option>
+                                                    <option value="Bio-Medical Engineering">Bio-Medical Engineering
+                                                    </option>
+                                                    <option value="Mechanical Engineering">Mechanical Engineering
+                                                    </option>
+                                                    <option value="Mechatronics Engineering">Mechatronics Engineering
+                                                    </option>
+                                                    <option value="Civil Engineering">Civil Engineering</option>
+                                                    <option value="Electrical Engineering">Electrical Engineering
+                                                    </option>
+                                                    <option value="Marine Engineering">Marine Engineering</option>
+                                                    <option value="Automobile Engineering">Automobile Engineering
+                                                    </option>
+                                                    <option value="Humanity & Science Department">Humanity & Science
+                                                        Department
+                                                    </option>
+                                                {% else %}
+                                                    <option value="{{ session['admin_credential'] }}">{{ session['admin_credential'] }}</option>
+                                                {% endif %}
+
                                             </select>
                                         </div>
                                     </div>
@@ -149,7 +154,9 @@
                                     </fieldset>
                                     <div class="row"></div>
                                     <div class="row center">
-                                        <button class="btnsubmit uk-button uk-button-default" style="border-color: lawngreen" type="submit">Next</button>
+                                        <button class="btnsubmit uk-button uk-button-default"
+                                                style="border-color: lawngreen" type="submit">Next
+                                        </button>
                                     </div>
                                 </div>
                             </div>

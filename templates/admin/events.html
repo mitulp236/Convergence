@@ -40,7 +40,7 @@
             <div class="uk-modal-dialog uk-modal-body">
 
                 <h2 class="uk-modal-title">Description - {{ myevent.NAME }}</h2>
-                <p>{{ myevent.DESCRIPTION }}</p>
+                <p id="event_description"></p>
                 <p class="uk-text-right">
                     <a class="uk-button uk-button-default" href="/events"> Close</a>
                 </p>
@@ -136,8 +136,15 @@
                     this.selectionEnd = start + 1;
             }
         });
-
-
+        {% if action == "description" %}
+            event_description = document.getElementById('event_description');
+            var des = '';
+                {% set d = myevent.DESCRIPTION.splitlines() %}
+                {% for de in d %}
+                    des += '{{ de }}<br>'
+                {% endfor %}
+                event_description.innerHTML = des;
+        {% endif %}
     </script>
     <script>
 

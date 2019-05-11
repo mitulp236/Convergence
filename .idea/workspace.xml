@@ -2,7 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="82acce37-8a1f-4fa1-a61f-a2a25587bf60" name="Default Changelist" comment="Het - Added dynamic event view">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/add_event.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/add_event.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/campaigner.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/campaigner.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/dashboard.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/dashboard.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/events.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/events.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/admin/student.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/admin/student.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/backend/admin_login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/backend/admin_login.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -29,11 +36,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="216">
-              <caret line="12" column="54" selection-start-line="12" selection-start-column="54" selection-end-line="12" selection-end-column="54" />
+            <state relative-caret-position="448">
+              <caret line="621" selection-start-line="621" selection-end-line="621" />
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -41,38 +48,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/admin/index.html">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/admin/student.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2412">
-              <caret line="134" selection-start-line="134" selection-end-line="136" selection-end-column="96" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/admin/campaigner.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3546">
-              <caret line="197" column="54" selection-start-line="197" selection-start-column="54" selection-end-line="197" selection-end-column="54" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/event_view.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1296">
-              <caret line="72" column="37" selection-start-line="72" selection-start-column="37" selection-end-line="72" selection-end-column="37" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/templates/admin/events.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1350">
-              <caret line="75" column="14" selection-start-line="53" selection-start-column="8" selection-end-line="75" selection-end-column="14" />
+            <state relative-caret-position="396">
+              <caret line="22" selection-start-line="22" selection-end-line="22" />
             </state>
           </provider>
         </entry>
@@ -92,6 +72,8 @@
       <find>et</find>
       <find>countdown</find>
       <find>/dash</find>
+      <find>/camp_dashboard</find>
+      <find>/dashboard</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -105,18 +87,19 @@
         <option value="$PROJECT_DIR$/data/events.xml" />
         <option value="$PROJECT_DIR$/templates/student/convergence/events/index.html" />
         <option value="$PROJECT_DIR$/templates/view_events.html" />
-        <option value="$PROJECT_DIR$/templates/admin/dashboard.html" />
-        <option value="$PROJECT_DIR$/templates/admin/add_event.html" />
         <option value="$PROJECT_DIR$/templates/admin/index.html" />
-        <option value="$PROJECT_DIR$/templates/admin/events.html" />
-        <option value="$PROJECT_DIR$/templates/admin/campaigner.html" />
-        <option value="$PROJECT_DIR$/templates/admin/student.html" />
         <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/templates/main/index.html" />
         <option value="$PROJECT_DIR$/templates/main/events/index.html" />
         <option value="$PROJECT_DIR$/static/animate.css" />
         <option value="$PROJECT_DIR$/templates/event_view.html" />
+        <option value="$PROJECT_DIR$/templates/backend/admin_login.html" />
+        <option value="$PROJECT_DIR$/templates/admin/dashboard.html" />
+        <option value="$PROJECT_DIR$/templates/admin/add_event.html" />
+        <option value="$PROJECT_DIR$/templates/admin/campaigner.html" />
+        <option value="$PROJECT_DIR$/templates/admin/events.html" />
         <option value="$PROJECT_DIR$/app.py" />
+        <option value="$PROJECT_DIR$/templates/admin/student.html" />
       </list>
     </option>
   </component>
@@ -147,6 +130,12 @@
               <item name="convergence2k19" type="462c0819:PsiDirectoryNode" />
               <item name="templates" type="462c0819:PsiDirectoryNode" />
               <item name="admin" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="convergence2k19" type="b2602c69:ProjectViewProjectNode" />
+              <item name="convergence2k19" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
+              <item name="backend" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -232,6 +221,8 @@
       <workItem from="1555992213858" duration="12147000" />
       <workItem from="1556077296708" duration="11382000" />
       <workItem from="1557373635128" duration="989000" />
+      <workItem from="1557405833496" duration="511000" />
+      <workItem from="1557474355617" duration="10497000" />
     </task>
     <task id="LOCAL-00001" summary="Het-Added &quot;Events&quot; in admin panel">
       <created>1554056848653</created>
@@ -286,7 +277,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="112347000" />
+    <option name="totallyTimeSpent" value="123355000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -300,7 +291,7 @@
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="752" extended-state="6" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.23827533" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24583964" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -316,7 +307,7 @@
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Python Console" order="11" />
       <window_info anchor="bottom" id="Concurrent Activities Diagram" order="12" show_stripe_button="false" weight="0.32715008" />
-      <window_info active="true" anchor="bottom" x="0" y="23" width="1366" height="713" id="Terminal" order="13" type="WINDOWED" visible="true" weight="0.62731874" />
+      <window_info anchor="bottom" x="0" y="23" width="1366" height="713" id="Terminal" order="13" type="WINDOWED" weight="0.62731874" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -401,38 +392,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/templates/admin/dashboard.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="94" selection-start-line="11" selection-start-column="94" selection-end-line="11" selection-end-column="94" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/admin/add_event.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="14" column="9" selection-start-line="11" selection-start-column="8" selection-end-line="14" selection-end-column="9" />
-          <folding>
-            <element signature="n#style#0;n#span#0;n#div#1;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#0;n#form#0;n#div#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#input#1;n#div#1;n#form#0;n#div#0;n#div#2;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#button#0;n#div#0;n#div#1;n#div#0;n#form#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#1;n#form#0;n#div#4;n#div#0;n#div#0;n#div#0;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/admin/student.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="23" column="34" selection-start-line="23" selection-start-column="34" selection-end-line="23" selection-end-column="34" />
-          <folding>
-            <element signature="e#293#324#0#HTML" expanded="true" />
-            <element signature="e#499#519#0#HTML" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="77">
@@ -485,41 +444,75 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.py">
+    <entry file="file://$PROJECT_DIR$/templates/backend/admin_login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
-          <caret line="12" column="54" selection-start-line="12" selection-start-column="54" selection-end-line="12" selection-end-column="54" />
+          <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="50" />
           <folding>
-            <element signature="e#0#14#0" expanded="true" />
+            <element signature="e#1126#1133#1#HTML" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/admin/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2412">
-          <caret line="134" selection-start-line="134" selection-end-line="136" selection-end-column="96" />
+        <state relative-caret-position="342">
+          <caret line="113" column="24" selection-start-line="113" selection-start-column="24" selection-end-line="113" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/admin/dashboard.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="15" column="45" selection-start-line="15" selection-start-column="45" selection-end-line="15" selection-end-column="45" />
+          <folding>
+            <element signature="e#434#491#0#HTML" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/admin/campaigner.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3546">
-          <caret line="197" column="54" selection-start-line="197" selection-start-column="54" selection-end-line="197" selection-end-column="54" />
+        <state relative-caret-position="173">
+          <caret line="145" selection-start-line="145" selection-end-line="145" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/admin/add_event.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="781">
+          <caret line="99" selection-start-line="99" selection-end-line="99" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/event_view.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1296">
-          <caret line="72" column="37" selection-start-line="72" selection-start-column="37" selection-end-line="72" selection-end-column="37" />
+        <state relative-caret-position="407">
+          <caret line="123" column="50" lean-forward="true" selection-start-line="118" selection-start-column="16" selection-end-line="123" selection-end-column="50" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/templates/admin/events.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1350">
-          <caret line="75" column="14" selection-start-line="53" selection-start-column="8" selection-end-line="75" selection-end-column="14" />
+        <state relative-caret-position="223">
+          <caret line="141" column="50" lean-forward="true" selection-start-line="141" selection-start-column="50" selection-end-line="141" selection-end-column="50" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="448">
+          <caret line="621" selection-start-line="621" selection-end-line="621" />
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/admin/student.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="22" selection-start-line="22" selection-end-line="22" />
         </state>
       </provider>
     </entry>

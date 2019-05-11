@@ -12,8 +12,6 @@
 
 {% block content %}
     {% if data == 'home' %}
-
-
         <div style="margin: 15px">
 
             <div class="row">
@@ -131,18 +129,22 @@
                     <div class="col m3">
                         <label>Branch</label>
                         <select class="browser-default" name="branch">
-                            <option value="" disabled selected>Choose your option</option>
-                            <option value="Information Technology">Information Technology</option>
-                            <option value="Computer Engineering">Computer Engineering</option>
-                            <option value="Electronics & Comm. Engg.">Electronics & Comm. Engg.</option>
-                            <option value="Bio-Medical Engineering">Bio-Medical Engineering</option>
-                            <option value="Mechanical Engineering">Mechanical Engineering</option>
-                            <option value="Mechatronics Engineering">Mechatronics Engineering</option>
-                            <option value="Civil Engineering">Civil Engineering</option>
-                            <option value="Electrical Engineering">Electrical Engineering</option>
-                            <option value="Marine Engineering">Marine Engineering</option>
-                            <option value="Automobile Engineering">Automobile Engineering</option>
-                            <option value="Humanity & Science Department">Humanity & Science Department</option>
+                            {% if session['admin_credential'] == 'root' %}
+                                <option value="" disabled selected>Choose your option</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="Computer Engineering">Computer Engineering</option>
+                                <option value="Electronics & Comm. Engg.">Electronics & Comm. Engg.</option>
+                                <option value="Bio-Medical Engineering">Bio-Medical Engineering</option>
+                                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                                <option value="Mechatronics Engineering">Mechatronics Engineering</option>
+                                <option value="Civil Engineering">Civil Engineering</option>
+                                <option value="Electrical Engineering">Electrical Engineering</option>
+                                <option value="Marine Engineering">Marine Engineering</option>
+                                <option value="Automobile Engineering">Automobile Engineering</option>
+                                <option value="Humanity & Science Department">Humanity & Science Department</option>
+                            {% else %}
+                                <option value="{{ session['admin_credential'] }}">{{ session['admin_credential'] }}</option>
+                            {% endif %}
                         </select>
                     </div>
                 </div>

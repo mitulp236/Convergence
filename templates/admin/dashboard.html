@@ -9,7 +9,13 @@
                         <div class="card-text">Total Student Enrolled</div>
                     </div>
                     <div class="col m6 flow-text "><span
-                            style="font-size: x-large;font-weight: bold;color: black">: {{ student|length }}</span>
+                            style="font-size: x-large;font-weight: bold;color: black">:
+                        {% if session['admin_credential'] != 'root' %}
+                            {{ student.count() }}
+                        {% else %}
+                            {{ student|length }}
+                        {% endif %}
+                    </span>
                     </div>
                 </div>
             </a>
@@ -22,7 +28,13 @@
                             <div class="card-text">Total Campaigner</div>
                         </div>
                         <div class="col m6 flow-text "><span
-                                style="font-size: x-large;font-weight: bold;color: black">: {{ myCampaigner|length }}</span>
+                                style="font-size: x-large;font-weight: bold;color: black">:
+                            {% if session['admin_credential'] != 'root' %}
+                                {{ myCampaigner.count() }}
+                            {% else %}
+                                {{ myCampaigner|length }}
+                            {% endif %}
+                        </span>
                         </div>
                     </div>
                 </div>
@@ -35,7 +47,13 @@
                         <div class="card-text">Total<br> Events</div>
                     </div>
                     <div class="col m6 flow-text "><span
-                            style="font-size: x-large;font-weight: bold;color: black">: {{ myEvents|length }}</span>
+                            style="font-size: x-large;font-weight: bold;color: black">:
+                        {% if session['admin_credential'] != 'root' %}
+                            {{ myEvents.count() }}
+                        {% else %}
+                            {{ myEvents|length }}
+                        {% endif %}
+                    </span>
                     </div>
 
                 </div>
