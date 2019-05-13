@@ -7,10 +7,65 @@
             color: black;
             background-color: white;
         }
+
+        /* loader script starts */
+        .spinner {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            margin: -75px 0 0 -75px;
+            width: 70px;
+            text-align: center;
+        }
+
+        .spinner > div {
+            width: 18px;
+            height: 18px;
+            background-color: #333;
+
+            border-radius: 100%;
+            display: inline-block;
+            -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+            animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+        }
+
+        .spinner .bounce1 {
+            -webkit-animation-delay: -0.32s;
+            animation-delay: -0.32s;
+        }
+
+        .spinner .bounce2 {
+            -webkit-animation-delay: -0.16s;
+            animation-delay: -0.16s;
+        }
+
+        @-webkit-keyframes sk-bouncedelay {
+            0%, 80%, 100% {
+                -webkit-transform: scale(0)
+            }
+            40% {
+                -webkit-transform: scale(1.0)
+            }
+        }
+
+        @keyframes sk-bouncedelay {
+            0%, 80%, 100% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+            40% {
+                -webkit-transform: scale(1.0);
+                transform: scale(1.0);
+            }
+        }
+
+        /* Loader script ends */
     </style>
 {% endblock %}
 
 {% block content %}
+
     {% if data == 'home' %}
         <div style="margin: 15px">
 
@@ -66,11 +121,13 @@
                             <td id="camp_status{{ camp_user.CAMP_ID }}">{{ camp_user.STATUS }}</td>
                             <td>
                                 {% if camp_user.STATUS == "active" %}
-                                    <a onclick="manage_camp({{ camp_user.CAMP_ID }})"><i class="material-icons prefix"
-                                                                                         style="padding-top: 5px">close</i></a>
+                                    <a onclick="manage_camp({{ camp_user.CAMP_ID }})"><i
+                                            class="material-icons prefix"
+                                            style="padding-top: 5px">close</i></a>
                                 {% else %}
-                                    <a onclick="manage_camp({{ camp_user.CAMP_ID }})"><i class="material-icons prefix"
-                                                                                         style="padding-top: 5px">check</i></a>
+                                    <a onclick="manage_camp({{ camp_user.CAMP_ID }})"><i
+                                            class="material-icons prefix"
+                                            style="padding-top: 5px">check</i></a>
                                 {% endif %}
 
                             </td>
@@ -82,12 +139,23 @@
         </div>
     {% endif %}
     {% if data == 'add' %}
-        <div class="row">
-            <form class="col m12 card" method="post" action="/form-register-campaigner">
+        <div class="spinner" id="spinner">
+            <div class="bounce1"></div>
+            <div class="bounce2"></div>
+            <div class="bounce3"></div>
+        </div>
+        <div class="row" id="add_main-content">
+            <form class="col m12 card">
 
                 <div class="row" style="margin-top: 20px">
                     <div class="col m10 center">
                         <span class="flow-text" style="font-size: 30px;">Register Campaigner</span>
+                        <div id="error">
+                            <div class="uk-alert-danger" uk-alert>
+                                <a class="uk-alert-close" uk-close></a>
+                                <p id="error_message"></p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -96,8 +164,9 @@
                     <div class="col m6">
                         <div class="input-field">
                             <i class="material-icons prefix">mail_outline</i>
-                            <input id="email" type="email" name="email">
+                            <input id="email" type="email" name="email" class="validate">
                             <label for="email">Email</label>
+                            <span class="helper-text" data-error="Incorrect Email" data-success="Correct Email">Enter valid email address</span>
                         </div>
                     </div>
                 </div>
@@ -128,9 +197,8 @@
                     </div>
                     <div class="col m3">
                         <label>Branch</label>
-                        <select class="browser-default" name="branch">
+                        <select class="browser-default" name="branch" id="branch">
                             {% if session['admin_credential'] == 'root' %}
-                                <option value="" disabled selected>Choose your option</option>
                                 <option value="Information Technology">Information Technology</option>
                                 <option value="Computer Engineering">Computer Engineering</option>
                                 <option value="Electronics & Comm. Engg.">Electronics & Comm. Engg.</option>
@@ -153,8 +221,7 @@
                     <div class="col m3">
                         <label>Semester</label>
                         <div class="input-field">
-                            <select class="browser-default" name="sem">
-                                <option value="" disabled selected>Choose your option</option>
+                            <select class="browser-default" name="sem" id="sem">
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>
@@ -180,10 +247,12 @@
                 </div>
                 <div class="row">
                     <div class="col m10 center">
-                        <button class="uk-button uk-button-default" style="border-color: lawngreen;margin-right: 50px"
-                                type="submit">Submit
+                        <button class="uk-button uk-button-default"
+                                style="border-color: lawngreen;margin-right: 50px"
+                                type="submit" id="submit-add">Submit
                         </button>
-                        <button class="uk-button uk-button-default" style="border-color: red;" type="reset">Clear
+                        <button class="uk-button uk-button-default" style="border-color: red;" type="reset"
+                                id="reset-add">Clear
                         </button>
                     </div>
                 </div>
@@ -191,15 +260,19 @@
 
             <div class="col m2"></div>
         </div>
-
-
-
     {% endif %}
 {% endblock %}
 {% block  script %}
     <script src="{{ url_for('static', filename = 'admin.js') }}">
     </script>
     <script>
+
+        spinner = document.getElementById('spinner');
+        spinner.style.display = 'none';
+
+        document.getElementById('error').style.display = 'none';
+
+
         function manage_camp(id) {
             var camp_stat = document.getElementById('camp_status' + id);
             $.ajax({
@@ -212,6 +285,90 @@
                         window.location.href = "/campaigner/home"
                     }
                 })
+        }
+
+
+        document.getElementById('submit-add').addEventListener("click", function (event) {
+            event.preventDefault();
+            document.getElementById('add_main-content').style.opacity = '0.5';
+            spinner.style.display = 'block';
+            email = document.getElementById('email');
+            fname = document.getElementById('fname');
+            lname = document.getElementById('lname');
+            er_no = document.getElementById('er_no');
+            mobile_number = document.getElementById('mobile_number');
+            branch = document.getElementById('branch');
+            sem = document.getElementById('sem');
+
+            email.disabled = true;
+            fname.disabled = true;
+            lname.disabled = true;
+            er_no.disabled = true;
+            mobile_number.disabled = true;
+            branch.disabled = true;
+            sem.disabled = true;
+            document.getElementById('submit-add').disabled = true;
+            document.getElementById('reset-add').disabled = true;
+
+            if (email.value.length == 0) {
+                error_message('All fields are mendatory !');
+            } else if (fname.value.length == 0) {
+                error_message('All fields are mendatory !');
+            } else if (lname.value.length == 0) {
+                error_message('All fields are mendatory !');
+            } else if (er_no.value.length == 0) {
+                error_message('All fields are mendatory !');
+            } else if (mobile_number.value.length == 0) {
+                error_message('All fields are mendatory !');
+            } else {
+                $.ajax({
+                    data: {
+                        email: email.value,
+                        firstname: fname.value,
+                        lastname: lname.value,
+                        er_no: er_no.value,
+                        mobile_number: mobile_number.value,
+                        sem: sem.value,
+                        branch: branch.value
+                    },
+                    type: 'POST',
+                    url: '/form-register-campaigner'
+                })
+                    .done(function (data) {
+                        if (data.data != 'success') {
+                            error_message(data.data);
+                        } else {
+                            window.location.href = "/campaigner/home/success"
+                        }
+                    })
+            }
+        });
+
+        function error_message(msg) {
+            spinner.style.display = 'none';
+            document.getElementById('add_main-content').style.opacity = '1';
+
+            email = document.getElementById('email');
+            fname = document.getElementById('fname');
+            lname = document.getElementById('lname');
+            er_no = document.getElementById('er_no');
+            mobile_number = document.getElementById('mobile_number');
+            branch = document.getElementById('branch');
+            sem = document.getElementById('sem');
+
+            email.disabled = false;
+            fname.disabled = false;
+            lname.disabled = false;
+            er_no.disabled = false;
+            mobile_number.disabled = false;
+            branch.disabled = false;
+            sem.disabled = false;
+            document.getElementById('submit-add').disabled = false;
+            document.getElementById('reset-add').disabled = false;
+
+            document.getElementById('error').style.display = 'block';
+            s = "<div class='uk-alert-danger' uk-alert><a class='uk-alert-close' id='msg_close' uk-close></a><p id='error_message'>" + msg + "</p></div>";
+            document.getElementById('error').innerHTML = s;
         }
     </script>
 {% endblock %}

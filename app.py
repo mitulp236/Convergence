@@ -1,4 +1,6 @@
-import smtplib
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, render_template, jsonify, redirect, session, url_for
 import random
 import string
@@ -40,8 +42,8 @@ class Users(db.Model):
 
 
 class Campaigner(db.Model):
-    CAMP_ID = db.Column(db.Integer, primary_key=True)
-    EMAIL = db.Column(db.String(80), unique=True)
+    CAMP_ID = db.Column(db.Integer, unique=True )
+    EMAIL = db.Column(db.String(80),primary_key=True)
     PASSWORD = db.Column(db.String(120))
     FIRSTNAME = db.Column(db.String(50))
     LASTNAME = db.Column(db.String(50))
@@ -182,7 +184,6 @@ def logout():
 
 @app.route('/camp_dashboard/<camp_id>', methods=['POST', 'GET'])
 def camp_dashboard(camp_id):
-
     if request.method == "POST":
         return "camp post"
     else:
@@ -367,23 +368,6 @@ def dash():
     if 'admin_id' not in session:
         return render_template('backend/admin_login.html')
 
-    # student = Student_data.query.all()
-    # std = []
-    # for i in range(len(student)):
-    #     std.append({})
-    # temp_i = 0
-    # for s in student:
-    #     std[temp_i].update({'STUDENT_KEY': s.STUDENT_KEY,
-    #                         'NAME': s.LASTNAME + ',' + s.FIRSTNAME,
-    #                         'ENROLLMENT_NO': s.ENROLLMENT_NO,
-    #                         'BRANCH': s.BRANCH,
-    #                         'SEM': s.SEM,
-    #                         'COLLEGE': s.COLLEGE,
-    #                         'EMAIL': s.EMAIL,
-    #                         'MOBILE': s.MOBILE})
-    #     temp_i += 1
-    # myCampaigner = Campaigner.query.all()
-    # myEvents = Events.query.all()
     if session['admin_credential'] == 'root':
         student = Student_data.query.all()
         myCampaigner = Campaigner.query.all()
@@ -395,8 +379,9 @@ def dash():
     return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner, myEvents=myEvents)
 
 
-@app.route('/campaigner', defaults={'data': home})
-@app.route('/campaigner/<data>')
+@app.route('/campaigner', defaults={'data': home, 'message': None})
+@app.route('/campaigner/<data>', defaults={'message': None})
+@app.route('/campaigner/<data>/<message>')
 def camp1(data, message='none'):
     if 'admin_id' not in session:
         return render_template('backend/admin_login.html')
@@ -427,13 +412,69 @@ def add_campaigner():
         branch = request.form['branch']
         mobile_number = request.form['mobile_number']
         sem = request.form['sem']
-        pas = generate_camp_password(8)
-        campaigner_user = Campaigner(EMAIL=email, PASSWORD=pas, FIRSTNAME=fname, LASTNAME=lname, ENROLLMENT_NO=erno,
-                                     BRANCH=branch, SEM=sem, MOBILE=mobile_number, STATUS='active')
-        db.session.add(campaigner_user)
-        db.session.commit()
-        myCampaigner = Campaigner.query.all()
-    return redirect(url_for('camp1', data='home', message='success'))
+        print('type : ' + str(mobile_number.isdigit()))
+
+        if mobile_number.isdigit() is False:
+            return jsonify({'data': 'Invalid Mobile Number'})
+        elif len(str(mobile_number)) is not 10:
+            return jsonify({'data': 'Invalid Mobile Number'})
+        elif erno.isdigit() is False:
+            return jsonify({'data': 'Invalid Enrollment Number'})
+        elif len(str(erno)) is not 11:
+            return jsonify({'data': 'Invalid Enrollment Number'})
+        else:
+            try:
+                pas = generate_camp_password(8)
+                campaigner_user = Campaigner(EMAIL=email, PASSWORD=pas, FIRSTNAME=fname, LASTNAME=lname,
+                                         ENROLLMENT_NO=erno,
+                                         BRANCH=branch, SEM=sem, MOBILE=mobile_number, STATUS='active')
+                db.session.add(campaigner_user)
+                db.session.commit()
+
+                mail_campaigner_password(email, fname + " " + lname, pas)
+                return jsonify({'data': 'success'})
+            except:
+                return jsonify({'data': 'User already exists ! '})
+
+
+def mail_campaigner_password(receiver_email, name, camp_password):
+    sender_email = "UvpceConvergence2k19@gmail.com"
+    password = "2k19_convergence@Uvpce"
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Convergence2k19 Campaigner Password"
+    message["From"] = sender_email
+    message["To"] = receiver_email
+
+    # Create the plain-text and HTML version of your message
+    text = """\
+    CONVERGENCE"""
+    html = """\
+    <html>
+      <body>
+        <p>Hi ,""" + name + """<br>
+           This is Convergence 2k19 Admin<br>
+           <br><br>
+    	   Your password is <h1>""" + camp_password + """</h1>
+        </p>
+      </body>
+    </html>
+    """
+
+    # Turn these into plain/html MIMEText objects
+    part1 = MIMEText(text, "plain")
+    part2 = MIMEText(html, "html")
+
+    # Add HTML/plain-text parts to MIMEMultipart message
+    # The email client will try to render the last part first
+    message.attach(part1)
+    message.attach(part2)
+
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    s.login(sender_email, password)
+    s.sendmail(sender_email, receiver_email, message.as_string())
+    s.quit()
 
 
 def generate_camp_password(size):
@@ -588,7 +629,6 @@ def list_student_date():
     else:
         student = Student_data.query.filter_by(BRANCH=session['admin_credential'])
         student_length = student.count()
-
 
     std = []
     for i in range(student_length):
