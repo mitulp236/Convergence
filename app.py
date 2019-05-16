@@ -42,8 +42,8 @@ class Users(db.Model):
 
 
 class Campaigner(db.Model):
-    CAMP_ID = db.Column(db.Integer, unique=True )
-    EMAIL = db.Column(db.String(80),primary_key=True)
+    CAMP_ID = db.Column(db.Integer, unique=True)
+    EMAIL = db.Column(db.String(80), primary_key=True)
     PASSWORD = db.Column(db.String(120))
     FIRSTNAME = db.Column(db.String(50))
     LASTNAME = db.Column(db.String(50))
@@ -134,33 +134,33 @@ def home():
 
 @app.route('/admin', methods=['POST', 'GET'])
 def admin():
-    if 'admin_temp_var' not in session and request.method != 'POST':
-        return render_template('backend/admin_login.html');
+    try:
+        if request.method == "POST":
+            email = request.form['email'];
+            password = request.form['password'];
+            admin_info = Users.query.filter_by(EMAIL=email, PASSWORD=password).first()
+            if admin_info:
+                id = admin_info.ID
+                credential = admin_info.PRIVILEGE
+                session['admin_id'] = id
+                session['admin_credential'] = credential
+                if credential == 'root':
+                    student = Student_data.query.all()
+                    myCampaigner = Campaigner.query.all()
+                    myEvents = Events.query.all()
+                else:
+                    student = Student_data.query.filter_by(BRANCH=credential)
+                    myCampaigner = Campaigner.query.filter_by(BRANCH=credential)
+                    myEvents = Events.query.filter_by(DEPARTMENT=credential)
 
-    if request.method == "POST":
-        email = request.form['email'];
-        password = request.form['password'];
-        admin_info = Users.query.filter_by(EMAIL=email, PASSWORD=password).first()
-        if admin_info:
-            id = admin_info.ID
-            credential = admin_info.PRIVILEGE
-            session['admin_id'] = id
-            session['admin_credential'] = credential
-            if credential == 'root':
-                student = Student_data.query.all()
-                myCampaigner = Campaigner.query.all()
-                myEvents = Events.query.all()
+                return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner,
+                                       myEvents=myEvents)
             else:
-                student = Student_data.query.filter_by(BRANCH=credential)
-                myCampaigner = Campaigner.query.filter_by(BRANCH=credential)
-                myEvents = Events.query.filter_by(DEPARTMENT=credential)
-
-            return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner,
-                                   myEvents=myEvents)
+                return render_template("backend/admin_login.html", message='Incorrect Username or Password !')
         else:
-            return render_template("backend/admin_login.html", message='Incorrect Username or Password !')
-    else:
-        return render_template("backend/admin_login.html")
+            return render_template("backend/admin_login.html")
+    except:
+        return render_template("backend/admin_login.html", message='Problem occurred in login ! Try again later or contact admin !')
 
 
 def auth(f):
@@ -272,7 +272,8 @@ def process():
 
         try:
             print('hello')
-            query = Student_data(STUDENT_KEY=key, FIRSTNAME=fname, LASTNAME=lname, ENROLLMENT_NO='', BRANCH='', SEM=0,
+            query = Student_data(STUDENT_KEY=key, FIRSTNAME=fname, LASTNAME=lname, ENROLLMENT_NO='', BRANCH='',
+                                 SEM=0,
                                  COLLEGE='', EMAIL=email, MOBILE=mobile, EVENT_1='', EVENT_2='', CAMP_ID=camp_id,
                                  LAST_LOGIN='')
             db.session.add(query)
@@ -426,8 +427,8 @@ def add_campaigner():
             try:
                 pas = generate_camp_password(8)
                 campaigner_user = Campaigner(EMAIL=email, PASSWORD=pas, FIRSTNAME=fname, LASTNAME=lname,
-                                         ENROLLMENT_NO=erno,
-                                         BRANCH=branch, SEM=sem, MOBILE=mobile_number, STATUS='active')
+                                             ENROLLMENT_NO=erno,
+                                             BRANCH=branch, SEM=sem, MOBILE=mobile_number, STATUS='active')
                 db.session.add(campaigner_user)
                 db.session.commit()
 
@@ -725,7 +726,8 @@ def view_events(dept):
     l = []
     for e in myevent:
         l.append(
-            {'id': e.ID, 'name': e.NAME, 'date': e.DATE, 'time': e.TIME, 'venue': e.VENUE, 'description': e.DESCRIPTION,
+            {'id': e.ID, 'name': e.NAME, 'date': e.DATE, 'time': e.TIME, 'venue': e.VENUE,
+             'description': e.DESCRIPTION,
              'rules': e.RULES, 'department': e.DEPARTMENT})
 
     sorted_l = sorted(l, key=lambda i: i['department'])
