@@ -9,11 +9,15 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{url_for('static', filename='backend/style.css')}}">
-
+    <style type="text/javascript">
+        
+     </style>
     <script type="text/javascript">
-        $(document).ready(function(){
 
+        $(document).ready(function(){
+            
             $("#key").on("click", function(){
+               
                  $.ajax({
                     data : {
                     },
@@ -22,6 +26,7 @@
                 })
                 .done(function(data){
                     $('#gkey').val(data.key);
+                    
 
                 })
                 event.preventDefault();
@@ -40,6 +45,7 @@
                     url : '/process'
                 })
                 .done(function(data){
+                    document.body.className="";
                     $('#result').text(data.result).show();
                     if(data.ok){
                         document.getElementById("camp_data_form").reset();
@@ -53,7 +59,7 @@
     <title>key Generation</title>
 </head>
 <body>
-
+    
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid" >
          <div class="navbar-header">
@@ -86,7 +92,8 @@
 
             
              <li><a href="/camp_change_password/{{session['camp_id']}}"><span class="glyphicon glyphicon-user"></span> Change Password</a></li>
-                <li><a href="/logout"><span class="glyphicon glyphicon-user"></span> Logout</a></li>
+             <li><a href="/camped_data"><span class="glyphicon glyphicon-user"></span> camped data</a></li>   
+             <li><a href="/logout"><span class="glyphicon glyphicon-user"></span> Logout</a></li>
 
            
 
@@ -117,9 +124,7 @@
         </table>
 
 
-    </form>
-         <h3 style="text-align: center;"><button>Hello, {{ session['camp_id'] }} | <a class="btn btn-primary" href="/logout">logout</a></button></h3>
-    </div>
+    
 
 
 
