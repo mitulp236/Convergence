@@ -13,7 +13,7 @@ from sqlalchemy.sql.expression import asc, desc
 
 app = Flask(__name__)
 app.secret_key = "jhsldfsakdfh23kjnk23h1j23g12kj3b12"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/mode4'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/convergence2k19'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
@@ -30,7 +30,7 @@ class Colleges(db.Model):
     sr_no = db.Column(db.Integer, primary_key=True, autoincrement=True)
     college = db.Column(db.String(500), nullable=False)
 
-    def __init__(sr_no,college):
+    def __init__(self,sr_no, college):
         self.sr_no = sr_no
         self.college = college
     def __repr__(self):
@@ -52,7 +52,7 @@ class Users(db.Model):
 
 
 class Campaigner(db.Model):
-    CAMP_ID = db.Column(db.Integer, unique=True)
+    CAMP_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     EMAIL = db.Column(db.String(80), primary_key=True)
     PASSWORD = db.Column(db.String(120))
     FIRSTNAME = db.Column(db.String(50))
