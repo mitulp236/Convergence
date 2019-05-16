@@ -9,10 +9,11 @@ from functools import wraps
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.expression import asc, desc
 
 app = Flask(__name__)
 app.secret_key = "jhsldfsakdfh23kjnk23h1j23g12kj3b12"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/convergence2k19-mitul'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/mode4'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
@@ -25,6 +26,15 @@ manager.add_command('db', MigrateCommand)
 # password from admin to check campaigner's password
 display_password = "123@abc"
 
+class Colleges(db.Model):
+    sr_no = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    college = db.Column(db.String(500), nullable=False)
+
+    def __init__(sr_no,college):
+        self.sr_no = sr_no
+        self.college = college
+    def __repr__(self):
+        return '<User %r>' % self.sr_no
 
 class Users(db.Model):
     ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -258,7 +268,7 @@ def process():
     elif mobile.isdigit() != True or len(mobile) != 10:
         return jsonify({"result": "Mobile Number is Not Valid !"})
     elif key == "":
-        return jsonify({"result": "key is required"})
+        return jsonify({"result": "key is required"})    
     else:
         query = Student_data.query.filter_by(STUDENT_KEY=key).first()
         if query is not None:
@@ -278,10 +288,21 @@ def process():
                                  LAST_LOGIN='')
             db.session.add(query)
             db.session.commit()
+            mail_camped_student(email, fname, key)
             return jsonify({"result": "Register Successfully ! ", "ok": "ok"})
         except:
             return jsonify({"result": "Something was Wrong ! please try again !  "})
 
+@app.route('/camped_data', methods=['POST', 'GET'])
+def camped_data():
+    camp_id = session['camp_id']
+    if request.method == "POST":
+        return "home"
+    else:
+        if 'camp_logged_in' in session:
+            query = Student_data.query.filter_by(CAMP_ID=camp_id)
+            return render_template("backend/camped_data.html",query=query)
+        return render_template("backend/camp_login.html")
 
 @app.route('/camp_change_password/<camp_id>', methods=['POST', 'GET'])
 def camp_change_password(camp_id):
@@ -313,7 +334,7 @@ def camp_change_password(camp_id):
             query.PASSWORD = new_password
             db.session.commit()
             session.clear()
-            return "<h2>Password Changed Successfully ! </h2>"
+            return '<h2>Password Changed Successfully ! </h2> <a href="/camp">BACK</a>  '
         except:
             message = "Something Was wrong ! "
             danzer = "true"
@@ -324,12 +345,7 @@ def camp_change_password(camp_id):
 
 # campaigner password forgot
 
-def send_data(reciver, message):
-    s = smtplib.SMTP('smtp.gmail.com', 587)
-    s.starttls()
-    s.login("testuvpce@gmail.com", "4591814515")
-    s.sendmail("testuvpce@gmail.com", reciver, message)
-    s.quit()
+
 
 
 @app.route('/camp_forgot_password', methods=['POST', 'GET'])
@@ -348,9 +364,7 @@ def camp_forgot_password():
             return render_template("backend/camp_forgot_password.html", message=message, danzer=danzer)
         print(query.EMAIL)
         try:
-            reciver = query.EMAIL
-            message = "Hello Campaginer : your Password is :  {} ".format(query.PASSWORD)
-            send_data(reciver, message)
+            mail_campaigner_password(query.EMAIL, query.FIRSTNAME, query.PASSWORD)
             message = "Password is sent on your Registed Email !  "
             danzer = "false"
             return render_template("backend/camp_forgot_password.html", message=message, danzer=danzer)
@@ -476,6 +490,47 @@ def mail_campaigner_password(receiver_email, name, camp_password):
     s.login(sender_email, password)
     s.sendmail(sender_email, receiver_email, message.as_string())
     s.quit()
+
+
+def mail_camped_student(receiver_email, name, credential):
+    sender_email = "UvpceConvergence2k19@gmail.com"
+    password = "2k19_convergence@Uvpce"
+
+    message = MIMEMultipart("alternative")
+    message["Subject"] = "Welcome to Convergence2k19 "
+    message["From"] = sender_email
+    message["To"] = receiver_email
+
+    # Create the plain-text and HTML version of your message
+    text = """\
+    CONVERGENCE"""
+    html = """\
+    <html>
+      <body>
+        <p>Hi ,""" + name + """<br>
+           This is Convergence 2k19 Admin<br>
+           <br><br>
+    	   <h2 style="color:#758AA2;">Your uniqe key is </h2> <h1> """ + credential + """</h1>
+        </p>
+      </body>
+    </html>
+    """
+
+    # Turn these into plain/html MIMEText objects
+    part1 = MIMEText(text, "plain")
+    part2 = MIMEText(html, "html")
+
+    # Add HTML/plain-text parts to MIMEMultipart message
+    # The email client will try to render the last part first
+    message.attach(part1)
+    message.attach(part2)
+
+    s = smtplib.SMTP('smtp.gmail.com', 587)
+    s.starttls()
+    s.login(sender_email, password)
+    s.sendmail(sender_email, receiver_email, message.as_string())
+    s.quit()
+
 
 
 def generate_camp_password(size):
@@ -751,6 +806,55 @@ def view_events(dept):
     print(m[selected_department])
     return render_template("event_view.html", myevent=m, selected_department=selected_department)
 
+@app.route('/registration', methods=['GET','POST'])
+def registration():
+    colleges = Colleges.query.all()
+    if request.method == 'POST':
+        STUDENT_KEY = request.form['STUDENT_KEY']
+        FIRSTNAME = request.form['FIRSTNAME']
+        LASTNAME = request.form['LASTNAME']
+        ENROLLMENT_NO = request.form['ENROLLMENT_NO']
+        BRANCH = request.form['BRANCH']
+        SEM = request.form['SEM']
+        COLLEGE = request.form['COLLEGE']
+        EMAIL = request.form['EMAIL']
+        MOBILE = request.form['MOBILE']
+        PASSWORD = request.form['PASSWORD']
+        danzer = "true"
+
+        if STUDENT_KEY == "" and FIRSTNAME == "" and LASTNAME == "" and ENROLLMENT_NO == "" and BRANCH == "" and SEM == "" and COLLEGE == "" and EMAIL == "" and MOBILE=="":
+            danzer = "true"
+            message = "Please Fill all Information ! "
+            return render_template("registration.html",danzer=danzer,message=message)
+
+        query = Student_data.query.filter_by(STUDENT_KEY=STUDENT_KEY,EMAIL=EMAIL).first()
+        if query is None:
+            message = "Your Credential Does Not Match ! "
+            danzer = "true"
+            return render_template("registration.html",danzer=danzer,message=message)
+
+        try:
+            update_this = Student_data.query.filter_by(EMAIL=EMAIL).first()
+            update_this.FIRSTNAME = FIRSTNAME
+            update_this.LASTNAME = LASTNAME
+            update_this.ENROLLMENT_NO = ENROLLMENT_NO
+            update_this.BRANCH = BRANCH
+            update_this.SEM = SEM
+            update_this.COLLEGE = COLLEGE
+            update_this.MOBILE = MOBILE
+            db.session.commit()
+            query = Users(EMAIL=EMAIL,PASSWORD=PASSWORD,PRIVILEGE="student")
+            db.session.add(query)
+            db.session.commit()
+            danzer = "false"
+            message="Registration Successfully Done !"
+            return render_template("registration.html",danzer=danzer,message=message)
+        except:
+            danzer = "true"
+            message="Something Was wrong! Please Try Again !"
+            return render_template("registration.html",danzer=danzer,message=message,colleges=colleges)  
+    else:
+        return render_template("registration.html",colleges=colleges)
 
 if __name__ == '__main__':
     manager.run()
