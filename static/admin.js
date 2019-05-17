@@ -1,5 +1,5 @@
 function show_password(id) {
-    al
+
     var pass = document.getElementById('camp_password' + id);
     if (pass.textContent == "********") {
 

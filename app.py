@@ -137,6 +137,26 @@ class Events(db.Model):
         return '<User %r>' % self.NAME
 
 
+class Log_Deleted_Students(db.Model):
+    ID = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
+    STUDENT_KEY = db.Column(db.String(50))
+    FIRSTNAME = db.Column(db.String(50))
+    LASTNAME = db.Column(db.String(50))
+    ENROLLMENT_NO = db.Column(db.String(15))
+    BRANCH = db.Column(db.String(50))
+    SEM = db.Column(db.Integer, nullable=True)
+    COLLEGE = db.Column(db.String(200))
+    EMAIL = db.Column(db.String(80))
+    MOBILE = db.Column(db.BigInteger)
+    EVENT_1 = db.Column(db.String(80))
+    EVENT_2 = db.Column(db.String(80))
+    CAMP_ID = db.Column(db.Integer)
+    DELETED_DATE = db.Column(db.String(50))
+
+    def __repr__(self):
+        return '<Log_Deleted_Student %r>' % self.ID
+
+
 @app.route('/', methods=['POST', 'GET'])
 def home():
     return render_template('main/index.html')
@@ -510,7 +530,7 @@ def mail_camped_student(receiver_email, name, credential):
         <p>Hi ,""" + name + """<br>
            This is Convergence 2k19 Admin<br>
            <br><br>
-    	   <h2 style="color:#758AA2;">Your uniqe key is </h2> <h1> """ + credential + """</h1>
+    	   <h2 style="color:#758AA2;">Your unique key is </h2> <h1> """ + credential + """</h1>
         </p>
       </body>
     </html>
@@ -855,6 +875,13 @@ def registration():
             return render_template("registration.html",danzer=danzer,message=message,colleges=colleges)  
     else:
         return render_template("registration.html",colleges=colleges)
+
+
+@app.route('/add_department_admin',methods=['POST','GET'])
+def add_department_admin():
+    if request.method is not 'POST':
+        return 'hello'
+
 
 if __name__ == '__main__':
     manager.run()
