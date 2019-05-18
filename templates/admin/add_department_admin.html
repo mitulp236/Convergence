@@ -1,14 +1,141 @@
 {% extends 'admin/index.html' %}
 
 {% block style %}
+    <style>
+        label {
+            font-weight: bold;
+        }
+
+        /* loader script starts */
+        .spinner {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            z-index: 1;
+            margin: -75px 0 0 -75px;
+            width: 70px;
+            text-align: center;
+        }
+
+        .spinner > div {
+            width: 18px;
+            height: 18px;
+            background-color: #333;
+
+            border-radius: 100%;
+            display: inline-block;
+            -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+            animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+        }
+
+        .spinner .bounce1 {
+            -webkit-animation-delay: -0.32s;
+            animation-delay: -0.32s;
+        }
+
+        .spinner .bounce2 {
+            -webkit-animation-delay: -0.16s;
+            animation-delay: -0.16s;
+        }
+
+        @-webkit-keyframes sk-bouncedelay {
+            0%, 80%, 100% {
+                -webkit-transform: scale(0)
+            }
+            40% {
+                -webkit-transform: scale(1.0)
+            }
+        }
+
+        @keyframes sk-bouncedelay {
+            0%, 80%, 100% {
+                -webkit-transform: scale(0);
+                transform: scale(0);
+            }
+            40% {
+                -webkit-transform: scale(1.0);
+                transform: scale(1.0);
+            }
+        }
+
+        /* Loader script ends */
+    </style>
 {% endblock %}
 
 {% block content %}
-    Hello World!
+    <div class="spinner" id="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+    </div>
+    <div id="main-admin-register">
+        <div class="row">
+            <form>
+                <div class="col m4">
+                    <label style="color: #000;">Email</label>
+                    <input type="email" name="admin_email" placeholder="Email Address" id="admin_email"/>
+                </div>
+                <div class="col m3">
+                    <label style="color: #000;">Department</label>
+                    <select name="department" class="browser-default" id="department">
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Computer Engineering">Computer Engineering</option>
+                        <option value="Electronics & Comm. Engg.">Electronics & Comm. Engg.</option>
+                        <option value="Bio-Medical Engineering">Bio-Medical Engineering</option>
+                        <option value="Mechanical Engineering">Mechanical Engineering</option>
+                        <option value="Mechatronics Engineering">Mechatronics Engineering</option>
+                        <option value="Civil Engineering">Civil Engineering</option>
+                        <option value="Electrical Engineering">Electrical Engineering</option>
+                        <option value="Marine Engineering">Marine Engineering</option>
+                        <option value="Automobile Engineering">Automobile Engineering</option>
+                        <option value="Humanity & Science Department">Humanity & Science Department</option>
+                    </select>
+                </div>
+                <div class="col m2">
+                    <br>
+                    <button type="submit" class="uk-button uk-button-primary" id="submit_data">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 {% endblock %}
 
 {% block script %}
     <script>
 
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('main-admin-register').style.opacity = '1';
+
+        document.getElementById('submit_data').addEventListener("click", function (event) {
+            event.preventDefault();
+            document.getElementById('spinner').style.display = 'block';
+            document.getElementById('main-admin-register').style.opacity = '0.5';
+            document.getElementById('admin_email').disabled = true;
+            document.getElementById('department').disabled = true;
+            $.ajax({
+                data: {
+                    email: document.getElementById('admin_email').value,
+                    department: document.getElementById('department').value
+                },
+                type: 'POST',
+                url: '/add_department_admin'
+            })
+                .done(function (data) {
+                    if (data.data == "empty") {
+                        UIkit.notification({message: '<h6>Email is mandatory ! </h6>'});
+                    } else if (data.data == "invalid") {
+                        UIkit.notification({message: '<h6>Invalid Email Address ! </h6>'});
+                    } else if (data.data == "exists") {
+                        UIkit.notification({message: '<h6>User already exists ! </h6>'});
+                    } else if (data.data == "unknown") {
+                        UIkit.notification({message: '<h6>Some error occurred ! Try again later or contact admin ! </h6>'});
+                    }
+                    document.getElementById('spinner').style.display = 'none';
+                    document.getElementById('main-admin-register').style.opacity = '1';
+                    document.getElementById('admin_email').disabled = false;
+                    document.getElementById('department').disabled = false;
+                })
+        });
     </script>
 {% endblock %}

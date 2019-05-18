@@ -336,9 +336,12 @@
                     url: '/form-register-campaigner'
                 })
                     .done(function (data) {
-                        if (data.data != 'success') {
+                        if (data.data == 'User already exists ! ') {
                             error_message(data.data);
-                        } else {
+                        } else if (data.data == 'unknown') {
+                            error_message("Some error occurred ! Try again later or contact admin ! ");
+                        }
+                        else {
                             window.location.href = "/campaigner/home/success"
                         }
                     })
