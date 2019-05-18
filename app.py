@@ -10,10 +10,11 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.expression import asc, desc
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "jhsldfsakdfh23kjnk23h1j23g12kj3b12"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/convergence2k19'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/mode6'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
@@ -82,6 +83,7 @@ class Campaigner(db.Model):
 
 
 class Student_data(db.Model):
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
     STUDENT_KEY = db.Column(db.String(16), primary_key=True)
     FIRSTNAME = db.Column(db.String(50))
     LASTNAME = db.Column(db.String(50))
@@ -91,10 +93,48 @@ class Student_data(db.Model):
     COLLEGE = db.Column(db.String(200))
     EMAIL = db.Column(db.String(80), unique=True)
     MOBILE = db.Column(db.BigInteger)
+    REG_DATE = db.Column(db.DateTime, nullable=False,default=datetime.utcnow)
     EVENT_1 = db.Column(db.String(80))
     EVENT_2 = db.Column(db.String(80))
     CAMP_ID = db.Column(db.Integer)
     LAST_LOGIN = db.Column(db.String(50))
+
+    def __init__(self, STUDENT_KEY, FIRSTNAME, LASTNAME, ENROLLMENT_NO, BRANCH, SEM, COLLEGE, EMAIL, MOBILE, EVENT_1,
+                 EVENT_2, CAMP_ID, LAST_LOGIN):
+        self.STUDENT_KEY = STUDENT_KEY
+        self.FIRSTNAME = FIRSTNAME
+        self.LASTNAME = LASTNAME
+        self.ENROLLMENT_NO = ENROLLMENT_NO
+        self.BRANCH = BRANCH
+        self.SEM = SEM
+        self.COLLEGE = COLLEGE
+        self.EMAIL = EMAIL
+        self.MOBILE = MOBILE
+        self.EVENT_1 = EVENT_1
+        self.EVENT_2 = EVENT_2
+        self.CAMP_ID = CAMP_ID
+        self.LAST_LOGIN = LAST_LOGIN
+
+    def __repr__(self):
+        return '<User %r>' % self.EMAIL
+
+
+class Log__deleted__students(db.Model):
+    ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    STUDENT_KEY = db.Column(db.String(16))
+    FIRSTNAME = db.Column(db.String(50))
+    LASTNAME = db.Column(db.String(50))
+    ENROLLMENT_NO = db.Column(db.String(15))
+    BRANCH = db.Column(db.String(50))
+    SEM = db.Column(db.Integer, nullable=True)
+    COLLEGE = db.Column(db.String(200))
+    EMAIL = db.Column(db.String(80))
+    MOBILE = db.Column(db.BigInteger)
+    REG_DATE = db.Column(db.DateTime, nullable=False,default=datetime.utcnow)
+    EVENT_1 = db.Column(db.String(80))
+    EVENT_2 = db.Column(db.String(80))
+    CAMP_ID = db.Column(db.Integer)
+    DELETED_DATE = db.Column(db.String(100))
 
     def __init__(self, STUDENT_KEY, FIRSTNAME, LASTNAME, ENROLLMENT_NO, BRANCH, SEM, COLLEGE, EMAIL, MOBILE, EVENT_1,
                  EVENT_2, CAMP_ID, LAST_LOGIN):
@@ -140,24 +180,7 @@ class Events(db.Model):
         return '<User %r>' % self.NAME
 
 
-class Log_Deleted_Students(db.Model):
-    ID = db.Column(db.INTEGER, primary_key=True, autoincrement=True)
-    STUDENT_KEY = db.Column(db.String(50))
-    FIRSTNAME = db.Column(db.String(50))
-    LASTNAME = db.Column(db.String(50))
-    ENROLLMENT_NO = db.Column(db.String(15))
-    BRANCH = db.Column(db.String(50))
-    SEM = db.Column(db.Integer, nullable=True)
-    COLLEGE = db.Column(db.String(200))
-    EMAIL = db.Column(db.String(80))
-    MOBILE = db.Column(db.BigInteger)
-    EVENT_1 = db.Column(db.String(80))
-    EVENT_2 = db.Column(db.String(80))
-    CAMP_ID = db.Column(db.Integer)
-    DELETED_DATE = db.Column(db.String(50))
 
-    def __repr__(self):
-        return '<Log_Deleted_Student %r>' % self.ID
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -315,7 +338,7 @@ def process():
             msg = "<h2 style='color:#758AA2;'>Your unique key is </h2> <h1>" + key + "</h1>"
             send_mail(email, fname + " " + lname, msg)
             # mail_camped_student(email, fname, key)
-            return jsonify({"result": "Register Successfully ! ", "ok": "ok"})
+            return jsonify({"result": " ", "ok": "ok"})
         except:
             return jsonify({"result": "Something was Wrong ! please try again !  "})
 
@@ -328,7 +351,8 @@ def camped_data():
     else:
         if 'camp_logged_in' in session:
             query = Student_data.query.filter_by(CAMP_ID=camp_id)
-            return render_template("backend/camped_data.html", query=query)
+            query1 = Log__deleted__students.query.filter_by(CAMP_ID=camp_id)
+            return render_template("backend/camped_data.html", query=query,query1=query1)
         return render_template("backend/camp_login.html")
 
 
@@ -849,6 +873,21 @@ def add_department_admin():
     if request.method is not 'POST':
         return render_template("admin/add_department_admin.html")
 
-
+@app.route('/delete_camped_student/<STUDENT_KEY>', methods=['POST'])
+def delete_camped_student(STUDENT_KEY):
+        if 'camp_logged_in' in session:
+            try:
+                camp_id = session['camp_id']
+                query2 = Student_data.query.filter_by(STUDENT_KEY=STUDENT_KEY).first()
+                db.session.delete(query2)
+                db.session.commit()
+                return redirect("camped_data")
+                
+            except:
+                return "Please try again ! something was wrong ! "
+        else:
+            return redirect("camp")
+            
+    
 if __name__ == '__main__':
     manager.run()

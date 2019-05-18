@@ -8,9 +8,17 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
     <link rel="stylesheet" href="{{url_for('static', filename='backend/style.css')}}">
-    <style type="text/javascript">
-        
+    <style type="text/css">
+        table {
+    border-collapse: collapse;
+}
+
+td {
+    padding-top: .5em;
+    padding-bottom: .5em;
+}
      </style>
     <script type="text/javascript">
 
@@ -45,10 +53,18 @@
                     url : '/process'
                 })
                 .done(function(data){
-                    document.body.className="";
-                    $('#result').text(data.result).show();
+                    var result = data.result
+                    swal("Oops...",result, "error");
+                  //  $('#result').text(data.result).show();
                     if(data.ok){
                         document.getElementById("camp_data_form").reset();
+                        swal({
+                                title: "Successfully Registered ! ",
+                                text: "",
+                                icon: "success",
+                                button: "Okk",
+                            });
+                        
                     }
                 })
                 event.preventDefault();
@@ -104,20 +120,24 @@
         </div><!--/.container-fluid -->
       </nav>
 
-    <div class="jumbotron">
+    <div class="" style="margin-top:10%;">
 
-        <h2  style="text-align: center" id="result"></h2>
+            
+           
+				
         <br />
-        <h2 style="text-align: center">Register The Student </h2>
+        <h1 style="text-align: center;font-family:Comic Sans Ms;" class="display-3"> Student Registration </h1>
+        
         <hr />
     <form  name="camp_data_form" id="camp_data_form" action="/process" method="POST">
-        <table align="center">
-            <tr><td>First Name </td><td> <input type="text" name="fname" id="fname" required></td></tr>
-            <tr><td>Last Name </td><td> <input type="text" name="lname" id="lname" required></td></tr>
-        <tr><td>email </td><td> <input type="email" name="email" id="email" required></td></tr>
-        <tr><td>mobile </td><td> <input type="number" name="mobile" id="mobile" required>
-        <tr><td><button id="key">Key Generate</button></td><td>
-        <input type="text" name="gkey" id="gkey" disabled required><br /></td></tr>
+        <table align="center" class="">
+               
+            <tr><td><label for="usr">First Name</label> </td><td> <input type="text" class="form-control" name="fname" id="fname" required></td></tr>
+            <tr><td> <label for="usr">Last Name</label> </td><td> <input type="text" class="form-control" name="lname" id="lname" required></td></tr>
+        <tr><td> <label for="email">Email</label> </td><td> <input type="email" class="form-control" name="email" id="email" required></td></tr>
+        <tr ><td> <label for="usr">Mobile</label></td><td> <input type="number" class="form-control" name="mobile" id="mobile" required>
+        <tr><td ><label for="usr"></label ><button  class="btn  btn-success" id="key">Key Generate</button></label></td><td style="padding-left:5px;  ">
+        <input type="text" class="form-control" name="gkey" id="gkey" disabled required><br /></td></tr>
 
 
         <tr><td></td><td><input class="btn btn-primary" type="submit" name="submit" id="submit"></td></tr>

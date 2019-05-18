@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Registration</title>
+</head>
+<body>
+    <h2>Registration</h2>
+
+    <h3>{{message}}</h3>
+
+    <form action="/registration" method="POST">
+        First Name : <input type="text" name="FIRSTNAME"><br />
+        Last Name : <input type="text" name="LASTNAME"><br />
+        ENrollment : <input type="text" name="ENROLLMENT_NO"><br />
+        
+        
+        <select name="BRANCH">
+                <option value="-1" hidden>Branch</option>
+                <option value="Infromation Texhnology">Infromation Texhnology</option>
+                <option value="Computer Engineering">Computer Engineering</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="Electrical Engineering">Electrical Engineering</option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Electronics & Communication Engineering">Electronics & Communication Engineering</option>
+                <option value="Bio-Medical Engineering">Bio-Medical Engineering</option>
+                <option value="Mechatronics Engineering">Mechatronics Engineering</option>
+                <option value="Automobile Engineering">Automobile Engineering</option>
+                <option value="Marine Engineering">Marine Engineering</option>
+        </select><br />
+
+        <select name="SEM">
+                <option value="-1" hidden>Semester</option>
+                <option value="1">1</option>
+                <option value="3">3</option>
+                <option value="5">5</option>
+                <option value="7">7</option>
+        </select><br />
+        <select name="COLLEGE">
+            <option value="-1" hidden>Select College</option>
+        {% for item in colleges %}
+            <option value="{{item.college}}">{{item.college}}</option>
+        {% endfor %}
+            <option value="other">Other</option>
+        </select><br />
+
+       
+        Email : <input type="text" name="EMAIL"><br />
+        Mobile : <input type="text" name="MOBILE"><br />
+        Key : <input type="text" name="STUDENT_KEY"><br />
+        Password : <input type="text" name="PASSWORD"><br />
+        <input type="submit" value="submit">
+    </form>
+</body>
+</html>
