@@ -1,8 +1,9 @@
 import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import sqlalchemy
 from flask import Flask, request, render_template, jsonify, redirect, session, url_for
-import random
+import random,re
 import string
 import pymysql
 from functools import wraps
@@ -475,8 +476,10 @@ def add_campaigner():
                 send_mail(email, fname + " " + lname, msg)
                 # mail_campaigner_password(email, fname + " " + lname, pas)
                 return jsonify({'data': 'success'})
-            except:
+            except sqlalchemy.exc.IntegrityError:
                 return jsonify({'data': 'User already exists ! '})
+            except:
+                return jsonify({'data': 'unknown'})
 
 
 def send_mail(receiver_email, name, msg):
@@ -846,8 +849,39 @@ def registration():
 
 @app.route('/add_department_admin', methods=['POST', 'GET'])
 def add_department_admin():
-    if request.method is not 'POST':
+    if request.method == 'GET':
+
         return render_template("admin/add_department_admin.html")
+
+    if request.method == 'POST':
+        email = request.form['email']
+        department = request.form['department']
+        if len(email) == 0:
+            return jsonify({'data':'empty'})
+        match = re.search(r'\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b', email, re.I)
+        if match == None:
+            return jsonify({'data':'invalid'})
+        else:
+            try:
+                pas = generate_admin_password(8)
+                new_admin = Users(EMAIL=email,PASSWORD=pas,PRIVILEGE=department)
+                db.session.add(new_admin)
+                db.session.commit()
+                msg = "<h2 style='color:#758AA2;'>Your password is </h2> <h1>" + pas + "</h1>"
+                send_mail(email, "Admin - "+department, msg)
+                return render_template("admin/add_department_admin.html")
+            except sqlalchemy.exc.IntegrityError:
+                return jsonify({'data': 'exists'})
+            except:
+                return jsonify({'data': 'unknown'})
+
+
+def generate_admin_password(size):
+    exists = 1;
+    while exists != 0:
+        p = id_generator(size)
+        exists = Users.query.filter_by(PASSWORD=p).count()
+    return str(p)
 
 
 if __name__ == '__main__':
