@@ -18,9 +18,12 @@
 
   $(document).ready(function() {
     $(".delete_btn").click(function(event) {
-        if(!confirm('Are Your sure To Delete This Data ?') ){
-            event.preventDefault();
-        } 
+      var ans = prompt("This data is permanently deleted after taking your action..if you are sure then enter your password?");
+
+        if (ans == null || ans == "" || ans != "{{campainer.PASSWORD}}") {
+          alert("Password does not match ! ")
+          event.preventDefault();
+        }
 
     });
 });

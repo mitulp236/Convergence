@@ -14,7 +14,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "jhsldfsakdfh23kjnk23h1j23g12kj3b12"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/mode6'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/mode7'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
@@ -351,8 +351,9 @@ def camped_data():
     else:
         if 'camp_logged_in' in session:
             query = Student_data.query.filter_by(CAMP_ID=camp_id)
+            campainer = Campaigner.query.filter_by(CAMP_ID=camp_id).first()
             query1 = Log__deleted__students.query.filter_by(CAMP_ID=camp_id)
-            return render_template("backend/camped_data.html", query=query,query1=query1)
+            return render_template("backend/camped_data.html", query=query,query1=query1,campainer=campainer)
         return render_template("backend/camp_login.html")
 
 
