@@ -97,6 +97,33 @@
                 </div>
             </form>
         </div>
+
+        <div class="row">
+            <div class="col m2"></div>
+            <div class="col m8">
+                <div>
+                    <table class="highlight centered" style="border: 1px #0791e6 solid">
+                        <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Department</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in users %}
+                            {% if user.PRIVILEGE != "root" %}
+                                <tr>
+                                    <td>{{ user.EMAIL }}</td>
+                                    <td>{{ user.PRIVILEGE }}</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="col m2"></div>
+        </div>
     </div>
 
 {% endblock %}
@@ -130,6 +157,8 @@
                         UIkit.notification({message: '<h6>User already exists ! </h6>'});
                     } else if (data.data == "unknown") {
                         UIkit.notification({message: '<h6>Some error occurred ! Try again later or contact admin ! </h6>'});
+                    } else if (data.data == "success") {
+                        window.location.href = "/add_department_admin"
                     }
                     document.getElementById('spinner').style.display = 'none';
                     document.getElementById('main-admin-register').style.opacity = '1';

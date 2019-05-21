@@ -2,7 +2,8 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, render_template, jsonify, redirect, session, url_for
-import random
+import sqlalchemy
+import random,re
 import string
 import pymysql
 from functools import wraps
@@ -14,7 +15,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "jhsldfsakdfh23kjnk23h1j23g12kj3b12"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/mode7'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/convergence'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
@@ -190,7 +191,7 @@ def home():
 
 @app.route('/admin', methods=['POST', 'GET'])
 def admin():
-    try:
+    # try:
         if request.method == "POST":
             email = request.form['email'];
             password = request.form['password'];
@@ -215,9 +216,9 @@ def admin():
                 return render_template("backend/admin_login.html", message='Incorrect Username or Password !')
         else:
             return render_template("backend/admin_login.html")
-    except:
-        return render_template("backend/admin_login.html",
-                               message='Problem occurred in login ! Try again later or contact admin !')
+    # except:
+    #     return render_template("backend/admin_login.html",
+    #                            message='Problem occurred in login ! Try again later or contact admin !')
 
 
 def auth(f):
@@ -934,11 +935,43 @@ def registration():
 @app.route('/add_department_admin', methods=['POST', 'GET'])
 def add_department_admin():
     try:
-        if request.method is not 'POST':
-            return render_template("admin/add_department_admin.html")
+        if request.method == 'GET':
+            user = Users.query.all()
+            return render_template("admin/add_department_admin.html",users=user)
+
+        if request.method == 'POST':
+            email = request.form['email']
+            department = request.form['department']
+            if len(email) == 0:
+                return jsonify({'data': 'empty'})
+            match = re.search(r'\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b', email, re.I)
+            if match == None:
+                return jsonify({'data': 'invalid'})
+            else:
+                try:
+                    pas = generate_admin_password(8)
+                    new_admin = Users(EMAIL=email, PASSWORD=pas, PRIVILEGE=department)
+                    db.session.add(new_admin)
+                    db.session.commit()
+                    msg = "<h2 style='color:#758AA2;'>Your password is </h2> <h1>" + pas + "</h1>"
+                    send_mail(email, "Admin - " + department, msg)
+                    return jsonify({'data':'success'})
+                except sqlalchemy.exc.IntegrityError:
+                    return jsonify({'data': 'exists'})
+                except:
+                    return jsonify({'data': 'unknown'})
     except:
         message = ""
         return render_template("backend/404.html",message=message)
+
+
+def generate_admin_password(size):
+    exists = 1;
+    while exists != 0:
+        p = id_generator(size)
+        exists = Users.query.filter_by(PASSWORD=p).count()
+    return str(p)
+
 
 @app.route('/delete_camped_student/<STUDENT_KEY>', methods=['POST'])
 def delete_camped_student(STUDENT_KEY):
