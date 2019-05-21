@@ -3,7 +3,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from flask import Flask, request, render_template, jsonify, redirect, session, url_for
 import sqlalchemy
-import random,re
+import random, re
 import string
 import pymysql
 from functools import wraps
@@ -94,7 +94,7 @@ class Student_data(db.Model):
     COLLEGE = db.Column(db.String(200))
     EMAIL = db.Column(db.String(80), unique=True)
     MOBILE = db.Column(db.BigInteger)
-    REG_DATE = db.Column(db.DateTime, nullable=False,default=datetime.utcnow)
+    REG_DATE = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     EVENT_1 = db.Column(db.String(80))
     EVENT_2 = db.Column(db.String(80))
     CAMP_ID = db.Column(db.Integer)
@@ -131,7 +131,7 @@ class Log__deleted__students(db.Model):
     COLLEGE = db.Column(db.String(200))
     EMAIL = db.Column(db.String(80))
     MOBILE = db.Column(db.BigInteger)
-    REG_DATE = db.Column(db.DateTime, nullable=False,default=datetime.utcnow)
+    REG_DATE = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     EVENT_1 = db.Column(db.String(80))
     EVENT_2 = db.Column(db.String(80))
     CAMP_ID = db.Column(db.Integer)
@@ -181,9 +181,6 @@ class Events(db.Model):
         return '<User %r>' % self.NAME
 
 
-
-
-
 @app.route('/', methods=['POST', 'GET'])
 def home():
     return render_template('main/index.html')
@@ -191,7 +188,7 @@ def home():
 
 @app.route('/admin', methods=['POST', 'GET'])
 def admin():
-    # try:
+    try:
         if request.method == "POST":
             email = request.form['email'];
             password = request.form['password'];
@@ -216,9 +213,9 @@ def admin():
                 return render_template("backend/admin_login.html", message='Incorrect Username or Password !')
         else:
             return render_template("backend/admin_login.html")
-    # except:
-    #     return render_template("backend/admin_login.html",
-    #                            message='Problem occurred in login ! Try again later or contact admin !')
+    except:
+        return render_template("backend/admin_login.html",
+                       message='Problem occurred in login ! Try again later or contact admin !')
 
 
 def auth(f):
@@ -256,7 +253,7 @@ def camp_dashboard(camp_id):
             return redirect("camp/")
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
 
 
 @app.route('/camp', methods=['POST', 'GET'])
@@ -287,7 +284,7 @@ def camp():
             return render_template("backend/camp_login.html")
     except:
         message = ""
-        return render_template("backend/404.html",message=message)        
+        return render_template("backend/404.html", message=message)
 
 
 def key_generator(size=16, chars=string.ascii_uppercase + string.digits):
@@ -340,9 +337,9 @@ def process():
             try:
                 print('hello')
                 query = Student_data(STUDENT_KEY=key, FIRSTNAME=fname, LASTNAME=lname, ENROLLMENT_NO='', BRANCH='',
-                                    SEM=0,
-                                    COLLEGE='', EMAIL=email, MOBILE=mobile, EVENT_1='', EVENT_2='', CAMP_ID=camp_id,
-                                    LAST_LOGIN='')
+                                     SEM=0,
+                                     COLLEGE='', EMAIL=email, MOBILE=mobile, EVENT_1='', EVENT_2='', CAMP_ID=camp_id,
+                                     LAST_LOGIN='')
                 db.session.add(query)
                 db.session.commit()
                 msg = "<h2 style='color:#758AA2;'>Your unique key is </h2> <h1>" + key + "</h1>"
@@ -353,7 +350,7 @@ def process():
                 return jsonify({"result": "Something was Wrong ! please try again !  "})
     except:
         message = ""
-        return render_template("backend/404.html",message=message)                
+        return render_template("backend/404.html", message=message)
 
 
 @app.route('/camped_data', methods=['POST', 'GET'])
@@ -367,11 +364,11 @@ def camped_data():
                 query = Student_data.query.filter_by(CAMP_ID=camp_id)
                 campainer = Campaigner.query.filter_by(CAMP_ID=camp_id).first()
                 query1 = Log__deleted__students.query.filter_by(CAMP_ID=camp_id)
-                return render_template("backend/camped_data.html", query=query,query1=query1,campainer=campainer)
+                return render_template("backend/camped_data.html", query=query, query1=query1, campainer=campainer)
             return render_template("backend/camp_login.html")
     except:
         message = ""
-        return render_template("backend/404.html",message=message)            
+        return render_template("backend/404.html", message=message)
 
 
 @app.route('/camp_change_password/<camp_id>', methods=['POST', 'GET'])
@@ -414,7 +411,8 @@ def camp_change_password(camp_id):
             return render_template("backend/camp_change_password.html")
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 # campaigner password forgot
 
@@ -448,7 +446,7 @@ def camp_forgot_password():
             return render_template("backend/camp_forgot_password.html")
     except:
         message = ""
-        return render_template("backend/404.html",message=message)            
+        return render_template("backend/404.html", message=message)
 
         # Het
 
@@ -470,7 +468,8 @@ def dash():
         return render_template('admin/dashboard.html', student=student, myCampaigner=myCampaigner, myEvents=myEvents)
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 @app.route('/campaigner', defaults={'data': home, 'message': None})
 @app.route('/campaigner/<data>', defaults={'message': None})
@@ -487,7 +486,8 @@ def camp1(data, message='none'):
         return render_template('admin/campaigner.html', myCampaigner=myCampaigner, data=data, message=message)
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 @app.route('/admin_logout')
 def admin_logout():
@@ -523,8 +523,8 @@ def add_campaigner():
                 try:
                     pas = generate_camp_password(8)
                     campaigner_user = Campaigner(EMAIL=email, PASSWORD=pas, FIRSTNAME=fname, LASTNAME=lname,
-                                                ENROLLMENT_NO=erno,
-                                                BRANCH=branch, SEM=sem, MOBILE=mobile_number, STATUS='active')
+                                                 ENROLLMENT_NO=erno,
+                                                 BRANCH=branch, SEM=sem, MOBILE=mobile_number, STATUS='active')
                     db.session.add(campaigner_user)
                     db.session.commit()
                     msg = "<h2 style='color:#758AA2;'>Your password is </h2> <h1>" + pas + "</h1>"
@@ -535,7 +535,8 @@ def add_campaigner():
                     return jsonify({'data': 'User already exists ! '})
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 def send_mail(receiver_email, name, msg):
     sender_email = "UvpceConvergence2k19@gmail.com"
@@ -604,7 +605,8 @@ def show_camp_password():
             return jsonify({'status': 'failed'})
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 @app.route('/change_camp_status', methods=['POST'])
 def change_camp_status():
@@ -625,7 +627,8 @@ def change_camp_status():
         return jsonify({'msg': 'success'})
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 # events
 @app.route('/events', defaults={'action': None, 'id': None, 'msg': None})
@@ -662,7 +665,8 @@ def events(msg, action, id):
             return render_template('admin/events.html', myevent=myevent, message='home', msg="error")
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 @app.route('/add_event')
 def add_event():
@@ -672,7 +676,7 @@ def add_event():
         return render_template('admin/add_event.html')
     except:
         message = ""
-        return render_template("backend/404.html",message=message)    
+        return render_template("backend/404.html", message=message)
 
 
 @app.route('/add_event_next', methods=['POST'])
@@ -696,7 +700,8 @@ def add_event_next():
             return render_template("admin/add_event.html", status=session['event_rules_count'])
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 @app.route('/add_rules', methods=['POST'])
 def add_rules():
@@ -720,7 +725,7 @@ def add_rules():
         date = d[2] + "/" + d[1] + "/" + d[0]
 
         myevents = Events(ID=None, NAME=event_name, DATE=date, DEPARTMENT=event_depatment, TIME=event_time,
-                        VENUE=event_venue, DESCRIPTION=event_description, RULES=rules)
+                          VENUE=event_venue, DESCRIPTION=event_description, RULES=rules)
         db.session.add(myevents)
         db.session.commit()
         if session['admin_credential'] == 'root':
@@ -730,7 +735,8 @@ def add_rules():
         return render_template('admin/events.html', myevent=myevent, message='home', msg='success')
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 @app.route('/students')
 def students():
@@ -742,7 +748,8 @@ def students():
         return render_template('admin/student.html', student=std)
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
+
 
 def list_student_date():
     if session['admin_credential'] == 'root':
@@ -825,7 +832,7 @@ def search_student():
         return render_template('admin/student.html', student=search_result)
     except:
         message = ""
-        return render_template("backend/404.html",message=message)        
+        return render_template("backend/404.html", message=message)
 
 
 @app.route('/index.html')
@@ -929,7 +936,7 @@ def registration():
             return render_template("registration.html", colleges=colleges)
     except:
         message = ""
-        return render_template("backend/404.html",message=message)            
+        return render_template("backend/404.html", message=message)
 
 
 @app.route('/add_department_admin', methods=['POST', 'GET'])
@@ -937,7 +944,7 @@ def add_department_admin():
     try:
         if request.method == 'GET':
             user = Users.query.all()
-            return render_template("admin/add_department_admin.html",users=user)
+            return render_template("admin/add_department_admin.html", users=user)
 
         if request.method == 'POST':
             email = request.form['email']
@@ -955,14 +962,14 @@ def add_department_admin():
                     db.session.commit()
                     msg = "<h2 style='color:#758AA2;'>Your password is </h2> <h1>" + pas + "</h1>"
                     send_mail(email, "Admin - " + department, msg)
-                    return jsonify({'data':'success'})
+                    return jsonify({'data': 'success'})
                 except sqlalchemy.exc.IntegrityError:
                     return jsonify({'data': 'exists'})
                 except:
                     return jsonify({'data': 'unknown'})
     except:
         message = ""
-        return render_template("backend/404.html",message=message)
+        return render_template("backend/404.html", message=message)
 
 
 def generate_admin_password(size):
@@ -982,16 +989,15 @@ def delete_camped_student(STUDENT_KEY):
                 query2 = Student_data.query.filter_by(STUDENT_KEY=STUDENT_KEY).first()
                 db.session.delete(query2)
                 db.session.commit()
-                return redirect("camped_data")
-                
+                return redirect(url_for("camped_data"))
             except:
                 return "Please try again ! something was wrong ! "
         else:
-            return redirect("camp")
+            return redirect(url_for("camp"))
     except:
         message = ""
-        return render_template("backend/404.html",message=message)            
-            
-    
+        return render_template("backend/404.html", message=message)
+
+
 if __name__ == '__main__':
     manager.run()
