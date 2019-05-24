@@ -15,7 +15,7 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = "jhsldfsakdfh23kjnk23h1j23g12kj3b12"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost:3306/convergence'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost:3306/mode9'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['DEBUG'] = True
 db = SQLAlchemy(app)
@@ -321,8 +321,8 @@ def process():
             return jsonify({"result": "email required"})
         elif mobile.isdigit() != True or len(mobile) != 10:
             return jsonify({"result": "Mobile Number is Not Valid !"})
-        elif key == "":
-            return jsonify({"result": "key is required"})
+        elif key == "" or len(key)<16 or len(key)>16:
+            return jsonify({"result": "key is Not valid"})
         else:
             query = Student_data.query.filter_by(STUDENT_KEY=key).first()
             if query is not None:
