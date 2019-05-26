@@ -24,7 +24,7 @@ td {
 
         $(document).ready(function(){
             
-            $("#key").on("click", function(){
+           /* $("#key").on("click", function(){
                
                  $.ajax({
                     data : {
@@ -38,7 +38,7 @@ td {
 
                 })
                 event.preventDefault();
-            });
+            }); */
 
             $('form').on('submit',function(event){
                 $.ajax({
@@ -47,7 +47,6 @@ td {
                         lname : $('#lname').val(),
                         email : $('#email').val(),
                         mobile : $('#mobile').val(),
-                        key : $('#gkey').val()
                     },
                     type : 'POST',
                     url : '/process'
@@ -60,7 +59,7 @@ td {
                         document.getElementById("camp_data_form").reset();
                         swal({
                                 title: "Successfully Registered ! ",
-                                text: "",
+                                text: data.key,
                                 icon: "success",
                                 button: "Okk",
                             });
@@ -136,14 +135,14 @@ td {
             <tr><td> <label for="usr">Last Name</label> </td><td> <input type="text" class="form-control" name="lname" id="lname" required></td></tr>
         <tr><td> <label for="email">Email</label> </td><td> <input type="email" class="form-control" name="email" id="email" required></td></tr>
         <tr ><td> <label for="usr">Mobile</label></td><td> <input type="number" class="form-control" name="mobile" id="mobile" required>
-        <tr><td ><label for="usr"></label ><button  class="btn  btn-success" id="key">Key Generate</button></label></td><td style="padding-left:5px;  ">
-        <input type="text" class="form-control" name="gkey" id="gkey" disabled required><br /></td></tr>
+        <!--<tr><td ><label for="usr"></label ><button  class="btn  btn-success" id="key">Key Generate</button></label></td><td style="padding-left:5px;  ">
+        <input type="text" class="form-control" name="gkey" id="gkey" disabled required><br /></td></tr>-->
 
 
         <tr><td></td><td><input class="btn btn-primary" type="submit" name="submit" id="submit"></td></tr>
         </table>
 
-
+        </form>
     
 
 

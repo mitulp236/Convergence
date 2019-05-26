@@ -297,8 +297,8 @@ def generatekey():
         return render_template('backend/camp_login.html')
 
     key = key_generator()
-    return jsonify({"key": key})
-
+    #return jsonify({"key": key})
+    return key
 
 @app.route('/process', methods=['POST'])
 def process():
@@ -307,7 +307,7 @@ def process():
         lname = request.form['lname']
         email = request.form['email']
         mobile = request.form['mobile']
-        key = request.form['key']
+        key = generatekey()
         camp_id = session['camp_id']
         print(str(camp_id))
         query = Campaigner.query.filter_by(CAMP_ID=camp_id, STATUS="active").first()
@@ -335,7 +335,6 @@ def process():
                 return jsonify({"result": "Email is Already Registed ! type Othe Email !"})
 
             try:
-                print('hello')
                 query = Student_data(STUDENT_KEY=key, FIRSTNAME=fname, LASTNAME=lname, ENROLLMENT_NO='', BRANCH='',
                                      SEM=0,
                                      COLLEGE='', EMAIL=email, MOBILE=mobile, EVENT_1='', EVENT_2='', CAMP_ID=camp_id,
@@ -345,7 +344,7 @@ def process():
                 msg = "<h2 style='color:#758AA2;'>Your unique key is </h2> <h1>" + key + "</h1>"
                 send_mail(email, fname + " " + lname, msg)
                 # mail_camped_student(email, fname, key)
-                return jsonify({"result": " ", "ok": "ok"})
+                return jsonify({"result": " ", "ok": "ok", "key":key})
             except:
                 return jsonify({"result": "Something was Wrong ! please try again !  "})
     except:
